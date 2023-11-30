@@ -1,21 +1,18 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class TransactionsProducts extends Model {
+  class Holding extends Model {
     static associate(models) {
       //create associations in here
-      TransactionsProducts.belongsTo(models.user, { foreignKey: "userId" });
-      TransactionsProducts.belongsTo(models.coin, { foreignKey: "coinId" });
-      TransactionsProducts.belongsTo(models.product, {
+      Holding.belongsTo(models.user, { foreignKey: "userId" });
+      Holding.belongsTo(models.coin, { foreignKey: "coinId" });
+      Holding.belongsTo(models.product, {
         foreignKey: "productId",
-      });
-      TransactionsProducts.hasMany(models.transactionsPoint, {
-        foreignKey: "transactionProductId",
       });
     }
   }
 
-  TransactionsProducts.init(
+  Holding.init(
     {
       userId: {
         type: DataTypes.INTEGER,
@@ -33,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      productId: {
+      productid: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -45,25 +42,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
-      fromAddress: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      toAddress: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      transactionHash: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
     },
     {
       sequelize,
-      modelName: "TransactionsProduct",
+      modelName: "holding",
       timestamps: true,
       underscored: true,
     }
   );
-  return TransactionsProducts;
+  return Holding;
 };

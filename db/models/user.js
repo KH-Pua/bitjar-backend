@@ -1,27 +1,27 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class Users extends Model {
+  class User extends Model {
     //create our associations
 
     static associate(models) {
       //create associations in here
-      Users.hasMany(models.transactionProduct, { foreignKey: "userId" });
-      Users.hasMany(models.transactionPoint, { foreignKey: "userId" });
-      Users.hasMany(models.transactionPayment, { foreignKey: "userId" });
-      Users.hasMany(models.holdings, { foreignKey: "userId" });
-      Users.hasMany(models.referral, {
+      User.hasMany(models.transactionProduct, { foreignKey: "userId" });
+      User.hasMany(models.transactionPoint, { foreignKey: "userId" });
+      User.hasMany(models.transactionPayment, { foreignKey: "userId" });
+      User.hasMany(models.holding, { foreignKey: "userId" });
+      User.hasMany(models.referral, {
         foreignKey: "refererId",
         as: "referer",
       });
-      Users.hasMany(models.referral, {
+      User.hasMany(models.referral, {
         foreignKey: "refereeId",
         as: "referee",
       });
     }
   }
 
-  Users.init(
+  User.init(
     {
       walletAddress: {
         type: DataTypes.STRING,
@@ -57,5 +57,5 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  return Users;
+  return User;
 };

@@ -1,18 +1,18 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class TransactionsPayments extends Model {
+  class TransactionPayment extends Model {
     static associate(models) {
       //create associations in here
-      TransactionsPayments.belongsTo(models.user, { foreignKey: "userId" });
-      TransactionsPayments.belongsTo(models.coin, { foreignKey: "coinId" });
-      TransactionsPayments.hasMany(models.transactionsPoint, {
+      TransactionPayment.belongsTo(models.user, { foreignKey: "userId" });
+      TransactionPayment.belongsTo(models.coin, { foreignKey: "coinId" });
+      TransactionPayment.hasMany(models.transactionPoint, {
         foreignKey: "transactionProductId",
       });
     }
   }
 
-  TransactionsPayments.init(
+  TransactionPayment.init(
     {
       userId: {
         type: DataTypes.INTEGER,
@@ -57,10 +57,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "TransactionsPayment",
+      modelName: "transactionPayment",
       timestamps: true,
       underscored: true,
     }
   );
-  return TransactionsPayments;
+  return TransactionPayment;
 };

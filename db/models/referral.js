@@ -1,21 +1,21 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class Referrals extends Model {
+  class Referral extends Model {
     static associate(models) {
       //create associations in here
-      Referrals.belongsTo(models.user, {
+      Referral.belongsTo(models.user, {
         foreignKey: "refererId",
         as: "referer",
       });
-      Referrals.belongsTo(models.user, {
+      Referral.belongsTo(models.user, {
         foreignKey: "refereeId",
         as: "referee",
       });
     }
   }
 
-  Referrals.init(
+  Referral.init(
     {
       refererId: {
         type: DataTypes.INTEGER,
@@ -41,5 +41,5 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  return Referrals;
+  return Referral;
 };
