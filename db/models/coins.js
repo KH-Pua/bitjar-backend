@@ -4,13 +4,13 @@ module.exports = (sequelize, DataTypes) => {
   class Coins extends Model {
     static associate(models) {
       //create associations in here
-      Coins.belongsToMany(models.transactionsProduct, {
+      Coins.hasMany(models.transactionsProduct, {
         foreignKey: "coinId",
       });
-      Coins.belongsToMany(models.transactionsPayment, {
+      Coins.hasMany(models.transactionsPayment, {
         foreignKey: "coinId",
       });
-      Coins.belongsToMany(models.holding, {
+      Coins.hasMany(models.holding, {
         foreignKey: "coinId",
       });
     }
