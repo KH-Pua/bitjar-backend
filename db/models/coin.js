@@ -1,22 +1,24 @@
+"use strict";
+
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class Coins extends Model {
+  class Coin extends Model {
     static associate(models) {
       //create associations in here
-      Coins.hasMany(models.transactionsProduct, {
+      Coin.hasMany(models.transactionProduct, {
         foreignKey: "coinId",
       });
-      Coins.hasMany(models.transactionsPayment, {
+      Coin.hasMany(models.transactionPayment, {
         foreignKey: "coinId",
       });
-      Coins.hasMany(models.holding, {
+      Coin.hasMany(models.holding, {
         foreignKey: "coinId",
       });
     }
   }
 
-  Coins.init(
+  Coin.init(
     {
       coinSymbol: {
         type: DataTypes.STRING,
@@ -34,5 +36,5 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  return Coins;
+  return Coin;
 };

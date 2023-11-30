@@ -1,30 +1,35 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class Rewards extends Model {
+  class Product extends Model {
     static associate(models) {
       //create associations in here
-      Rewards.hasMany(models.transactionPoint, { foreignKey: "rewardId" });
+      Product.hasMany(models.transactionProduct, {
+        foreignKey: "productId",
+      });
+      Product.hasMany(models.holding, {
+        foreignKey: "productId",
+      });
     }
   }
 
-  Rewards.init(
+  Product.init(
     {
-      actionName: {
+      productName: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      pointsAllocated: {
-        type: DataTypes.INTEGER,
+      apr: {
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "reward",
+      modelName: "product",
       timestamps: true,
       underscored: true,
     }
   );
-  return Rewards;
+  return Product;
 };

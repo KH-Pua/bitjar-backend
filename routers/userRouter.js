@@ -8,8 +8,8 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
-    router.post("/newUser", this.verifyToken, this.userController.createOne);
-    router.put("/edit", this.verifyToken, this.userController.editOneUser);
+    // router.post("/newUser", this.verifyToken, this.userController.createOne);
+    // router.put("/edit", this.verifyToken, this.userController.editOneUser);
 
     return router;
   };

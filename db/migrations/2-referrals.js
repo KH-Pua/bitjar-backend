@@ -9,7 +9,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("transactions_products", {
+    await queryInterface.createTable("referrals", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -17,7 +17,7 @@ module.exports = {
         primaryKey: true,
       },
 
-      user_id: {
+      referer_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -25,37 +25,13 @@ module.exports = {
           key: "id",
         },
       },
-      coin_id: {
+      referee_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "coins",
+          model: "users",
           key: "id",
         },
-      },
-      product_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "products",
-          key: "id",
-        },
-      },
-      amount: {
-        type: Sequelize.FLOAT,
-        allowNull: false,
-      },
-      from_address: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      to_address: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      transaction_hash: {
-        type: Sequelize.STRING,
-        allowNull: false,
       },
 
       created_at: {
@@ -69,13 +45,13 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("transactions_products");
+    await queryInterface.dropTable("referrals");
   },
 };

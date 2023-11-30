@@ -9,7 +9,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("transactions_points", {
+    await queryInterface.createTable("transactions_products", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -25,29 +25,37 @@ module.exports = {
           key: "id",
         },
       },
-      transaction_product_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "transactionProducts",
-          key: "id",
-        },
-      },
-      transaction_payment_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "transactionPayments",
-          key: "id",
-        },
-      },
-      reward_id: {
+      coin_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "rewards",
+          model: "coins",
           key: "id",
         },
+      },
+      product_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "products",
+          key: "id",
+        },
+      },
+      amount: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      from_address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      to_address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      transaction_hash: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
 
       created_at: {
@@ -61,13 +69,13 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("transactions_points");
+    await queryInterface.dropTable("transactions_products");
   },
 };
