@@ -18,7 +18,7 @@ module.exports = {
       {
         wallet_address: "0xe2A2BeAb22308383094613209F44eBf2dFE74AAD",
         email: "keehui.pua@gmail.com",
-        user_name: "pichukaku",
+        user_name: "KH",
         profile_picture:
           "https://firebasestorage.googleapis.com/v0/b/githired-c0060.appspot.com/o/profile-images%2Fdisplayphotos-01.jpg?alt=media&token=aca70dc5-3623-4186-9408-97d2836801f7",
         referral_code: "000002",
@@ -33,6 +33,17 @@ module.exports = {
         profile_picture:
           "https://firebasestorage.googleapis.com/v0/b/githired-c0060.appspot.com/o/profile-images%2Fdisplayphotos-01.jpg?alt=media&token=aca70dc5-3623-4186-9408-97d2836801f7",
         referral_code: "000003",
+        points: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        wallet_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1",
+        email: "spencer@gomu.co",
+        user_name: "spenceryang",
+        profile_picture:
+          "https://firebasestorage.googleapis.com/v0/b/githired-c0060.appspot.com/o/profile-images%2Fdisplayphotos-01.jpg?alt=media&token=aca70dc5-3623-4186-9408-97d2836801f7",
+        referral_code: "000004",
         points: 1,
         created_at: new Date(),
         updated_at: new Date(),

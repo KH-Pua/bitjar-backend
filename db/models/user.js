@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
 
     static associate(models) {
       //create associations in here
-      User.hasMany(models.transactionProduct, { foreignKey: "userId" });
-      User.hasMany(models.transactionPoint, { foreignKey: "userId" });
-      User.hasMany(models.transactionPayment, { foreignKey: "userId" });
-      User.hasMany(models.holding, { foreignKey: "userId" });
       User.hasMany(models.referral, {
         foreignKey: "refererId",
         as: "referer",
@@ -18,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "refereeId",
         as: "referee",
       });
+      User.hasMany(models.transactionProduct, { foreignKey: "userId" });
+      User.hasMany(models.transactionPoint, { foreignKey: "userId" });
+      User.hasMany(models.transactionPayment, { foreignKey: "userId" });
+      User.hasMany(models.holding, { foreignKey: "userId" });
     }
   }
 
