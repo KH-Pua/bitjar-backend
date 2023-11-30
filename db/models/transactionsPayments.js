@@ -34,11 +34,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING, // Accept different payment results
         allowNull: false,
       },
-      fiat_amount_usd: {
+      fiatAmountUsd: {
         type: DataTypes.FLOAT,
         allowNull: true, // Allow for payment failure
       },
-      coin_amount_purchased: {
+      coinAmountPurchased: {
         type: DataTypes.FLOAT,
         allowNull: true, // Allow for payment failure
       },
