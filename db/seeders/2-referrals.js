@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert("referrals", [
       {
-        referer_id: 0, // Gab refer KH
+        referer_id: 1, // Gab refer KH
         referee_id: 2,
         created_at: new Date(),
         updated_at: new Date(),
