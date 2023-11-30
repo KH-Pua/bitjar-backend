@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      productid: {
+      productId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
