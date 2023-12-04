@@ -7,7 +7,7 @@ module.exports = {
       {
         user_id: 1, // Gab
         coin_id: 1, // wBTC
-        product_id: 1, // wBTC Vault
+        product_id: 1, // wBTC AAVE
         amount: "0.88886",
         created_at: new Date(),
         updated_at: new Date(),
@@ -15,24 +15,24 @@ module.exports = {
       {
         user_id: 2, // Kee Hui
         coin_id: 1, // wBTC
-        product_id: 1, // wBTC Vault
+        product_id: 1, // wBTC AAVE
         amount: "1.2345",
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
         user_id: 3, // Shan Quan
-        coin_id: 2, // USDC
-        product_id: 2, // USDC Vault
-        amount: "50000",
+        coin_id: 3, // wETH
+        product_id: 3, // wETH AAVE
+        amount: "0.23",
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
         user_id: 4, // Spencer
-        coin_id: 2, // USDC
-        product_id: 2, // USDC Vault
-        amount: "100000",
+        coin_id: 3, // wETH
+        product_id: 3, // wETH AAVE
+        amount: "39.81",
         created_at: new Date(),
         updated_at: new Date(),
       },

@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       //create associations in here
       TransactionPoint.belongsTo(models.user, { foreignKey: "userId" });
-      TransactionPoint.belongsTo(models.reward, { foreignKey: "rewardId" });
       TransactionPoint.belongsTo(models.transactionProduct, {
         foreignKey: "transactionProductId",
       });
@@ -25,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
+      actionName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      pointsAllocated: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       transactionProductId: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -38,14 +45,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         references: {
           model: "transactionPayment",
-          key: "id",
-        },
-      },
-      rewardId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "reward",
           key: "id",
         },
       },
