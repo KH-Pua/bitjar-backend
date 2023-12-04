@@ -17,7 +17,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        coin_symbol: "ETH",
+        coin_symbol: "wETH",
         coin_name: "Ethereum",
         created_at: new Date(),
         updated_at: new Date(),
