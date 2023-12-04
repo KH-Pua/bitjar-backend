@@ -25,7 +25,7 @@ module.exports = {
           key: "id",
         },
       },
-      coin_Id: {
+      coin_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

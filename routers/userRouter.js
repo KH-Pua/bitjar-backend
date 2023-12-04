@@ -8,6 +8,7 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
+    router.get("/all", this.userController.getPointsLeaderboard);
     // router.post("/newUser", this.verifyToken, this.userController.createOne);
     // router.put("/edit", this.verifyToken, this.userController.editOneUser);
 
