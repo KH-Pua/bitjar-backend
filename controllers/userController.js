@@ -1,8 +1,9 @@
 const BaseController = require("./baseController");
 
 class UserController extends BaseController {
-  constructor(userModel) {
+  constructor(userModel, referralModel) {
     super(userModel);
+    this.referralModel = referralModel;
   }
 
   // Create new user via the route /user/newUser
@@ -58,22 +59,25 @@ class UserController extends BaseController {
     }
   };
 
-  // getOneUser = async (req, res) => {
-  //   const user = req.auth;
-  //   try {
-  //     const userData = await this.model.findByPk(user.userId);
+  // Get leaderboard for points sorted by number of points
+  getPointsLeaderboard = async (req, res) => {
+    let output = await this.model.findAll({
+      include: { model: this.referralModel, as: "referer", attributes: ["id"] },
+      order: [["points", "DESC"]],
+      attributes: ["userName", "profilePicture", "points"],
+    });
 
-  //     if (!userData) {
-  //       return res.status(404).json({ success: false, msg: "User not found" });
-  //     }
-  //     return res.json({
-  //       success: true,
-  //       userData,
-  //     });
-  //   } catch (err) {
-  //     return res.status(500).json({ success: false, msg: err.message });
-  //   }
-  // };
+    // Count referrals and add it
+    output = output.map((item) => {
+      const referralCount = item.referer ? item.referer.length : 0;
+      return {
+        ...item.toJSON(),
+        referralCount: referralCount,
+      };
+    });
+
+    return res.json({ success: true, data: output });
+  };
 }
 
 module.exports = UserController;

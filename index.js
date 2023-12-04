@@ -30,6 +30,7 @@ const {
 // Initialize controllers
 const userController = new UserController(
   user,
+  referral,
   holding,
   transactionsPayment,
   transactionsPoint,
