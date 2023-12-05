@@ -22,9 +22,9 @@ const {
   product,
   referral,
   reward,
-  transactionsPayment,
-  transactionsProduct,
-  transactionsPoint,
+  transactionPayment,
+  transactionProduct,
+  transactionPoint,
 } = db;
 
 // Initialize controllers
@@ -32,9 +32,9 @@ const userController = new UserController(
   user,
   referral,
   holding,
-  transactionsPayment,
-  transactionsPoint,
-  transactionsProduct
+  transactionPayment,
+  transactionPoint,
+  transactionProduct
 );
 
 // Initialize routers

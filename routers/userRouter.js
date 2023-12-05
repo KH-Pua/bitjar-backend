@@ -12,6 +12,11 @@ class UserRouter {
     // router.post("/newUser", this.verifyToken, this.userController.createOne);
     // router.put("/edit", this.verifyToken, this.userController.editOneUser);
 
+    router.post(
+      "/getUserPastTransactions",
+      this.userController.getUserPastTransactions
+    );
+
     return router;
   };
 }

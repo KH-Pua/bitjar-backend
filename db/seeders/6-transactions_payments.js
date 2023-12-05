@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    await queryInterface.bulkInsert("transactions_payments", [
+    await queryInterface.bulkInsert("transaction_payments", [
       {
         user_id: 1, // Gab
         coin_id: 1, // wBTC
@@ -86,6 +86,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("transactions_payments", null, {});
+    await queryInterface.bulkDelete("transaction_payments", null, {});
   },
 };

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    await queryInterface.bulkInsert("transactions_points", [
+    await queryInterface.bulkInsert("transaction_points", [
       {
         user_id: 1, // Gab earned daily login points
         reward_id: 1,
@@ -130,6 +130,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("transactions_points", null, {});
+    await queryInterface.bulkDelete("transaction_points", null, {});
   },
 };

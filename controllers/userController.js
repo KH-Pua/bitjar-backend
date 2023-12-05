@@ -1,9 +1,20 @@
 const BaseController = require("./baseController");
 
 class UserController extends BaseController {
-  constructor(userModel, referralModel) {
+  constructor(
+    userModel,
+    referralModel,
+    holdingModel,
+    transactionPaymentModel,
+    transactionPointModel,
+    transactionProductModel
+  ) {
     super(userModel);
     this.referralModel = referralModel;
+    this.holdingModel = holdingModel;
+    this.transactionPaymentModel = transactionPaymentModel;
+    this.transactionPointModel = transactionPointModel;
+    this.transactionProductModel = transactionProductModel;
   }
 
   // Create new user via the route /user/newUser
@@ -77,6 +88,24 @@ class UserController extends BaseController {
     });
 
     return res.json({ success: true, data: output });
+  };
+
+  getUserPastTransactions = async (req, res) => {
+    const { userId } = req.body;
+    try {
+      // console.log(this.transactionProductModel);
+      // console.log(userId);
+      // let output = await this.transactionProductModel.findAll({
+      //   where: { userId: userId },
+      // });
+
+      let user = await this.model.findByPk(userId);
+      const output = await user.getTransactionProducts();
+
+      return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
   };
 }
 
