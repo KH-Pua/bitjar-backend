@@ -8,6 +8,7 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
+    router.get("/userData/:address", this.userController.getUserData);
     // Points and referral leaderboard data
     router.get("/points/ranking", this.userController.getPointsLeaderboard);
     router.get(

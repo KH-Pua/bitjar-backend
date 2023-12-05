@@ -1,6 +1,14 @@
 const BaseController = require("./baseController");
+// const Sequelize = require("sequelize");
 
-const { OK, CREATED, BAD_REQUEST } = require("../constants/statusCodes");
+// const sequelize = new Sequelize("postgres://user:pichukaku:5432/bitjar");
+
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+} = require("../constants/statusCodes");
 class UserController extends BaseController {
   constructor(
     userModel,
@@ -8,7 +16,8 @@ class UserController extends BaseController {
     holdingModel,
     transactionPaymentModel,
     transactionPointModel,
-    transactionProductModel
+    transactionProductModel,
+    sequelize
   ) {
     super(userModel);
     this.referralModel = referralModel;
@@ -16,8 +25,36 @@ class UserController extends BaseController {
     this.transactionPaymentModel = transactionPaymentModel;
     this.transactionPointModel = transactionPointModel;
     this.transactionProductModel = transactionProductModel;
+    this.sequelize = sequelize;
   }
 
+  // Get userData from Wallet address
+  getUserData = async (req, res) => {
+    const { address } = req.params;
+    console.log("getuserid", address);
+    try {
+      let user = await this.model.findOne({
+        where: {
+          walletAddress: address,
+        },
+      });
+
+      if (!user) {
+        return res.status(NOT_FOUND).json({
+          success: false,
+          msg: "User ID not found for the given address",
+        });
+      }
+
+      return res.status(OK).json({ success: true, user });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve user data",
+        error: error,
+      });
+    }
+  };
   // Get leaderboard for points sorted by number of points
   getPointsLeaderboard = async (req, res) => {
     try {
@@ -121,12 +158,28 @@ class UserController extends BaseController {
       });
     }
     try {
-      const addingPoints = await this.transactionPointModel.create({
-        userId,
-        actionName,
-        pointsAllocated,
+      const output = await this.sequelize.transaction(async (t) => {
+        const updatePointsTransactions =
+          await this.transactionPointModel.create(
+            {
+              userId,
+              actionName,
+              pointsAllocated,
+            },
+            { transaction: t }
+          );
+        // Find user details within the same transaction
+        const user = await this.model.findByPk(userId, { transaction: t });
+        if (user) {
+          // If the user exists, update the points by adding pointsAllocated
+          const updatedPoints = user.points + pointsAllocated;
+          // Update the user's points within the transaction
+          await user.update({ points: updatedPoints }, { transaction: t });
+        }
+        return res
+          .status(CREATED)
+          .json({ success: true, message: "Points Added" });
       });
-      return res.status(CREATED).json({ success: true, addingPoints });
     } catch (error) {
       return res.status(BAD_REQUEST).json({
         success: false,

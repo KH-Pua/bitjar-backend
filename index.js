@@ -24,6 +24,7 @@ const {
   transactionPayment,
   transactionProduct,
   transactionPoint,
+  sequelize,
 } = db;
 
 // Initialize controllers
@@ -33,7 +34,8 @@ const userController = new UserController(
   holding,
   transactionPayment,
   transactionPoint,
-  transactionProduct
+  transactionProduct,
+  sequelize
 );
 
 // Initialize routers
