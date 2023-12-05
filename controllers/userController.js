@@ -8,7 +8,9 @@ class UserController extends BaseController {
     holdingModel,
     transactionPaymentModel,
     transactionPointModel,
-    transactionProductModel
+    transactionProductModel,
+    coinModel,
+    productModel
   ) {
     super(userModel);
     this.referralModel = referralModel;
@@ -16,6 +18,8 @@ class UserController extends BaseController {
     this.transactionPaymentModel = transactionPaymentModel;
     this.transactionPointModel = transactionPointModel;
     this.transactionProductModel = transactionProductModel;
+    this.coinModel = coinModel;
+    this.productModel = productModel;
   }
 
   // Get leaderboard for points sorted by number of points
@@ -145,7 +149,12 @@ class UserController extends BaseController {
       // });
 
       let user = await this.model.findByPk(userId);
-      const output = await user.getTransactionProducts();
+      const output = await user.getTransactionProducts({
+        include: [
+          { model: this.coinModel, attributes: ["coinName"] },
+          { model: this.productModel, attributes: ["productName"] },
+        ],
+      });
 
       return res.json({ success: true, data: output });
     } catch (err) {
