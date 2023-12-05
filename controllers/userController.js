@@ -161,6 +161,75 @@ class UserController extends BaseController {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
-}
+
+  getInfoViaWalletAdd = async (req, res) => {
+    function generateReferralCode() {
+      // Define the character set for alphanumeric codes
+      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  
+      // Generate a 6-digit alphanumeric code
+      let referralCode = '';
+      for (let i = 0; i < 6; i++) {
+          referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+  
+      return referralCode;
+    }
+
+    function generateUsername() {
+      // Generate a random 5-digit number
+      const randomNumber = Math.floor(10000 + Math.random() * 90000);
+  
+      // Combine "User" with the random number
+      const username = "User" + randomNumber;
+  
+      return username;
+    }
+  
+    try {
+      const { walletAddress } = req.body;
+      let output
+      const userInfo = await this.model.findAll({
+        where: {
+          walletAddress: walletAddress
+        }
+      });
+      if (!userInfo.id) {
+        const registrationData = {
+          walletAddress: walletAddress,
+          referralCode: generateReferralCode(),
+          userName: generateUsername(),
+        }
+        const newCreatedUser = await this.model.create(registrationData);
+        output = {
+          ...newCreatedUser,
+          newUser: true,
+        }
+      } else {
+        output = userInfo
+      }
+      return res.json({ success: true, data: output });
+    } catch(err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  editInfo = async (req, res) => {
+    try {
+      const inputInfo = Object.keys(req.body).reduce((item, key) => {
+        if (key !== "walletAddress") {
+          item[key] = req.body[key];
+        }
+      });
+      
+      const output = await this.model.update(inputInfo, {
+        where: {walletAddress: req.body.walletAddress}
+      })
+      return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+ }
 
 module.exports = UserController;

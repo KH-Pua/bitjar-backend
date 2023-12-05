@@ -30,6 +30,10 @@ class UserRouter {
       this.userController.getUserPastTransactions
     );
 
+    router.post("/getInfoViaWalletAdd", this.userController.getInfoViaWalletAdd);
+
+    router.put("/editInfo", this.userController.editInfo)
+
     return router;
   };
 }
