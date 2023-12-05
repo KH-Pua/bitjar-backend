@@ -8,9 +8,22 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
-    router.get("/all", this.userController.getPointsLeaderboard);
-    // router.post("/newUser", this.verifyToken, this.userController.createOne);
-    // router.put("/edit", this.verifyToken, this.userController.editOneUser);
+    // Points and referral leaderboard data
+    router.get("/points/ranking", this.userController.getPointsLeaderboard);
+    router.get(
+      "/referrals/ranking",
+      this.userController.getReferralLeaderboard
+    );
+    router.get("/referrals/:userId", this.userController.getReferralHistory);
+    // Transaction Points
+    router.get(
+      "/transactions/points/:userId",
+      this.userController.getTransactionPointsHistory
+    );
+    router.post(
+      "/transactions/points/add/:userId",
+      this.userController.addPoints
+    );
 
     router.post(
       "/getUserPastTransactions",

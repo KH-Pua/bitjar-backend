@@ -25,6 +25,14 @@ module.exports = {
           key: "id",
         },
       },
+      action_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      points_allocated: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       transaction_product_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -38,14 +46,6 @@ module.exports = {
         allowNull: true,
         references: {
           model: "transaction_payments",
-          key: "id",
-        },
-      },
-      reward_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "rewards",
           key: "id",
         },
       },

@@ -1,5 +1,6 @@
 const BaseController = require("./baseController");
 
+const { OK, CREATED, BAD_REQUEST } = require("../constants/statusCodes");
 class UserController extends BaseController {
   constructor(
     userModel,
@@ -17,77 +18,121 @@ class UserController extends BaseController {
     this.transactionProductModel = transactionProductModel;
   }
 
-  // Create new user via the route /user/newUser
-  createOne = async (req, res) => {
-    const { email, firstName, lastName, profilePic } = req.body;
-    //input validation
-
-    if (!email || !firstName || !lastName) {
-      return res
-        .status(400)
-        .json({ success: false, msg: "Please ensure all inputs are in" });
-    }
-    try {
-      console.log("body:", req.body);
-      const newUser = await this.model.create({
-        email,
-        firstName,
-        lastName,
-        profilePic,
-      });
-      const token = jwt.sign(
-        { userId: newUser.id, email: newUser.email }, // Add userId and email to JWT body
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "24h",
-        }
-      );
-
-      return res.json({ success: true, newUser, token });
-    } catch (err) {
-      return res.status(400).json({ success: false, msg: err });
-    }
-  };
-
-  editOneUser = async (req, res) => {
-    const user = req.auth;
-    const updateData = req.body;
-
-    try {
-      const output = await this.model.findByPk(user.userId);
-
-      if (!output) {
-        return res
-          .status(404)
-          .json({ success: false, msg: `${this.model.name} is not found` });
-      }
-
-      const update = await output.update(updateData);
-
-      return res.json({ success: true, update });
-    } catch (err) {
-      return res.status(500).json({ success: false, msg: err.message });
-    }
-  };
-
   // Get leaderboard for points sorted by number of points
   getPointsLeaderboard = async (req, res) => {
-    let output = await this.model.findAll({
-      include: { model: this.referralModel, as: "referer", attributes: ["id"] },
-      order: [["points", "DESC"]],
-      attributes: ["userName", "profilePicture", "points"],
-    });
+    try {
+      let output = await this.model.findAll({
+        order: [["points", "DESC"]],
+      });
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve points leaderboard data",
+        error: error,
+      });
+    }
+  };
 
-    // Count referrals and add it
-    output = output.map((item) => {
-      const referralCount = item.referer ? item.referer.length : 0;
-      return {
-        ...item.toJSON(),
-        referralCount: referralCount,
-      };
-    });
+  // Get leaderboard for referrals sorted by number of referrals
+  getReferralLeaderboard = async (req, res) => {
+    try {
+      let output = await this.model.findAll({
+        include: {
+          model: this.referralModel,
+          as: "referer",
+          attributes: ["id"],
+        },
+      });
 
-    return res.json({ success: true, data: output });
+      // Count referrals and add attribute
+      output = output.map((item) => {
+        const referralCount = item.referer ? item.referer.length : 0;
+        return {
+          ...item.toJSON(),
+          referralCount: referralCount,
+        };
+      });
+
+      // Sort by referral count
+      output.sort((a, b) => b.referralCount - a.referralCount);
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve referral leaderboard data",
+      });
+    }
+  };
+
+  getReferralHistory = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      let output = await this.referralModel.findAll({
+        where: { refererId: userId },
+        include: {
+          model: this.model,
+          as: "referee",
+          attributes: ["id", "walletAddress", "userName", "createdAt"],
+        },
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve referral history data",
+      });
+    }
+  };
+
+  getTransactionPointsHistory = async (req, res) => {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing userId in the request body",
+      });
+    }
+    try {
+      let output = await this.transactionPointModel.findAll({
+        where: { userId: userId },
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+      });
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve transactions points history",
+      });
+    }
+  };
+
+  addPoints = async (req, res) => {
+    const { userId } = req.params;
+    const { actionName, pointsAllocated } = req.body;
+
+    if (!userId || !actionName || !pointsAllocated) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing details in the request body",
+      });
+    }
+    try {
+      const addingPoints = await this.transactionPointModel.create({
+        userId,
+        actionName,
+        pointsAllocated,
+      });
+      return res.status(CREATED).json({ success: true, addingPoints });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: error.message,
+      });
+    }
   };
 
   getUserPastTransactions = async (req, res) => {

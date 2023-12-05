@@ -21,7 +21,6 @@ const {
   coin,
   product,
   referral,
-  reward,
   transactionPayment,
   transactionProduct,
   transactionPoint,

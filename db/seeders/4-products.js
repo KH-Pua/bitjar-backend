@@ -5,26 +5,20 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert("products", [
       {
-        product_name: "wBTC Vault",
-        apr: 0.025,
+        product_name: "wBTC AAVE",
+        apr: 0.0116,
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
-        product_name: "USDC Vault",
-        apr: 0.05,
+        product_name: "USDC AAVE",
+        apr: 0.0512,
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
-        product_name: "wBTC Yield",
-        apr: 0.015,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        product_name: "USDC Yield",
-        apr: 0.075,
+        product_name: "wETH AAVE",
+        apr: 0.0186,
         created_at: new Date(),
         updated_at: new Date(),
       },

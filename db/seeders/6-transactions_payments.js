@@ -52,10 +52,10 @@ module.exports = {
       },
       {
         user_id: 3, // Shan Quan
-        coin_id: 2, // USDC
+        coin_id: 3, // wETH
         payment_status: "Paid",
         fiat_amount_usd: "500",
-        coin_amount_purchased: "498.2",
+        coin_amount_purchased: "0.23",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
         to_address: "0x4610C1231A1452186c1C9434eb1320400b4e5E2E", // SQ wallet
         transaction_hash:
@@ -65,10 +65,10 @@ module.exports = {
       },
       {
         user_id: 4, // Spencer
-        coin_id: 2, // USDC
+        coin_id: 3, // wETH
         payment_status: "Paid",
         fiat_amount_usd: "88888",
-        coin_amount_purchased: "88887.8",
+        coin_amount_purchased: "39.81",
         from_address: "0x4ac5E0c3a1114D47459A818C85348068745d7CD5", // Spencer wallet
         to_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Gab wallet
         transaction_hash:
