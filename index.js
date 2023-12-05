@@ -33,7 +33,9 @@ const userController = new UserController(
   holding,
   transactionPayment,
   transactionPoint,
-  transactionProduct
+  transactionProduct,
+  coin,
+  product
 );
 
 // Initialize routers

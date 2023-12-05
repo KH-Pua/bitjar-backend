@@ -25,6 +25,11 @@ class UserRouter {
       this.userController.addPoints
     );
 
+    router.post(
+      "/getUserPastTransactions",
+      this.userController.getUserPastTransactions
+    );
+
     return router;
   };
 }
