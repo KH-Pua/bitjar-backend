@@ -13,7 +13,7 @@ class TransactionRouter {
       this.transactionPointController.checkDailyPointsClaim
     );
     router.post(
-      "/points/add/:userId",
+      "/points/add/",
       this.transactionPointController.addPoints
     );
 
