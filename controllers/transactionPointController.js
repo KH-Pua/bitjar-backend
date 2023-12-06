@@ -14,26 +14,42 @@ class TransactionPointController extends BaseController {
     this.sequelize = sequelize;
   }
 
+  // Check against transaction_point for any daily login points claimed by the user
   checkDailyPointsClaim = async (req, res) => {
     const { userId } = req.params;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
-    const result = await this.model.findOne({
-      where: {
-        userId,
-        actionName: {
-          [Op.startsWith]: "daily login", // Using Sequelize operator to find actionName starting with 'daily login'
+    try {
+      const result = await this.model.findOne({
+        where: {
+          userId,
+          actionName: {
+            [Op.startsWith]: "Daily Login", // Using Sequelize operator to find actionName starting with 'daily login'
+          },
+          createdAt: {
+            [Op.gte]: today, // Using Sequelize operator for 'greater than or equal to' today's date
+          },
         },
-        createdAt: {
-          [Op.gte]: today, // Using Sequelize operator for 'greater than or equal to' today's date
-        },
-      },
-    });
+      });
 
-    console.log(result);
-    return res.status(CREATED).json({ success: true, result });
+      console.log("Matching", result);
+      if (result) {
+        console.log("Matching row:", result);
+        return res.status(200).json({ success: true, result });
+      } else {
+        console.log("No matching row found");
+        return res
+          .status(404)
+          .json({ success: false, message: "No matching row found" });
+      }
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: error.message,
+      });
+    }
   };
 
   addPoints = async (req, res) => {
