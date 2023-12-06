@@ -196,7 +196,6 @@ class UserController extends BaseController {
           walletAddress: walletAddress
         }
       });
-
       // Check whether the user is registered.
       if (userInfo.length === 0) {
         const registrationData = {
@@ -206,16 +205,21 @@ class UserController extends BaseController {
           points: rewardPointsSchedule.signUp, 
         }
         // Pass new created user information to output
-        const newCreatedUser = await this.model.create(registrationData);
+        const newCreatedUserInfo = await this.model.create(registrationData);
+        //newCreatedUserInfo.dataValues["newUser"] = true;
+        //output = newCreatedUserInfo
         output = {
-          ...newCreatedUser,
+          ...newCreatedUserInfo,
           newUser: true,
         }
       } else {
         // Pass existing user information to output
-        output = userInfo
+        output = {
+          ...userInfo,
+          newUser: false,
+        }
       }
-      return res.json({ success: true, data: output });
+      return res.json({ success: true, output });
     } catch(err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
