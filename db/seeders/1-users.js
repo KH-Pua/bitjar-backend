@@ -26,7 +26,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        wallet_address: "0x4610C1231A1452186c1C9434eb1320400b4e5E2E",
+        wallet_address: "0x2d60041Eb25979D0017A1702f8E3b9759822b905",
         email: "thiashanquan93@gmail.com",
         user_name: "", // blank on purpose
         profile_picture:

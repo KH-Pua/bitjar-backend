@@ -37,6 +37,8 @@ const userController = new UserController(
   transactionPayment,
   transactionPoint,
   transactionProduct,
+  coin,
+  product,
   sequelize
 );
 

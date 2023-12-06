@@ -14,6 +14,8 @@ class UserController extends BaseController {
     transactionPaymentModel,
     transactionPointModel,
     transactionProductModel,
+    coinModel,
+    productModel,
     sequelize
   ) {
     super(userModel);
@@ -22,6 +24,8 @@ class UserController extends BaseController {
     this.transactionPaymentModel = transactionPaymentModel;
     this.transactionPointModel = transactionPointModel;
     this.transactionProductModel = transactionProductModel;
+    this.coinModel = coinModel;
+    this.productModel = productModel;
     this.sequelize = sequelize;
   }
 
@@ -141,6 +145,29 @@ class UserController extends BaseController {
         success: false,
         msg: "Unable to retrieve transactions points history",
       });
+    }
+  };
+
+  getUserPastTransactions = async (req, res) => {
+    const { userId } = req.body;
+    try {
+      // console.log(this.transactionProductModel);
+      // console.log(userId);
+      // let output = await this.transactionProductModel.findAll({
+      //   where: { userId: userId },
+      // });
+
+      let user = await this.model.findByPk(userId);
+      const output = await user.getTransactionProducts({
+        include: [
+          { model: this.coinModel, attributes: ["coinName"] },
+          { model: this.productModel, attributes: ["productName"] },
+        ],
+      });
+
+      return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
     }
   };
 }
