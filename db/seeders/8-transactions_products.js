@@ -33,7 +33,7 @@ module.exports = {
         coin_id: 3, // wETH
         product_id: 3,
         amount: "0.23",
-        from_address: "0x4610C1231A1452186c1C9434eb1320400b4e5E2E", // SQ wallet
+        from_address: "0x2d60041eb25979d0017a1702f8e3b9759822b905", // SQ wallet
         to_address: "wETH vault",
         transaction_hash:
           "0x3a4d8aa74bcd08e66fca6217166bccfeeef0e0f98ee35cb39eb2212a35c5f6a7",
