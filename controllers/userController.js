@@ -190,16 +190,17 @@ class UserController extends BaseController {
       const { walletAddress } = req.body;
       let output
       //Query for user info that match the wallet address inside db
-      const userInfo = await this.model.findAll({
+      const userInfo = await this.model.findOne({
         where: {
           walletAddress: walletAddress
         }
       });
       // Check whether the user is registered.
-      if (userInfo.length === 0) {
+      if (!userInfo) {
         const registrationData = {
           walletAddress: walletAddress,
           referralCode: generateReferralCode(),
+          points: 0
         }
         // Pass new created user information to output
         const newCreatedUserInfo = await this.model.create(registrationData);
@@ -218,6 +219,18 @@ class UserController extends BaseController {
       }
       return res.json({ success: true, output });
     } catch(err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  getUserDataViaReferralCode = async (req, res) => {
+    try {
+      const {referralCode} = req.body;
+      const output = await this.model.findOne({
+        where: {referralCode: referralCode}
+      });
+      return res.json({ success: true, output });
+    } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
@@ -250,7 +263,7 @@ class UserController extends BaseController {
       const referrerOutput = await this.model.findOne({
         where: {referralCode: referralCode}
       })
-      //get referer user id via wallet address
+      //get referee user id via wallet address
       const { walletAddress } = req.body;
       const refereeOutput = await this.model.findOne({
         where: {walletAddress: walletAddress}
