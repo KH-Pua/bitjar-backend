@@ -1,0 +1,9 @@
+{
+    "signUp": 50,
+    "referUser": 10,
+    "dailyLogin": 5,
+    "supplyToken": 1,
+    "purchaseToken": 1,
+    "downlineSupplyToken": 0.1,
+    "downlinePurchaseToken": 0.1
+}

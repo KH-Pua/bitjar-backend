@@ -1,4 +1,5 @@
 const BaseController = require("./baseController");
+const rewardPointsSchedule = require("../utilities/rewardPointsSchedule.json") 
 
 const { OK, CREATED, BAD_REQUEST } = require("../constants/statusCodes");
 class UserController extends BaseController {
@@ -189,23 +190,29 @@ class UserController extends BaseController {
     try {
       const { walletAddress } = req.body;
       let output
+      //Query for user info that match the wallet address inside db
       const userInfo = await this.model.findAll({
         where: {
           walletAddress: walletAddress
         }
       });
-      if (!userInfo.id) {
+
+      // Check whether the user is registered.
+      if (userInfo.length === 0) {
         const registrationData = {
           walletAddress: walletAddress,
           referralCode: generateReferralCode(),
           userName: generateUsername(),
+          points: rewardPointsSchedule.signUp, 
         }
+        // Pass new created user information to output
         const newCreatedUser = await this.model.create(registrationData);
         output = {
           ...newCreatedUser,
           newUser: true,
         }
       } else {
+        // Pass existing user information to output
         output = userInfo
       }
       return res.json({ success: true, data: output });
@@ -216,12 +223,15 @@ class UserController extends BaseController {
 
   editInfo = async (req, res) => {
     try {
+      // Remove the wallet address from the request body
       const inputInfo = Object.keys(req.body).reduce((item, key) => {
         if (key !== "walletAddress") {
           item[key] = req.body[key];
         }
-      });
-      
+        return item;
+      },{});
+
+      //Update the db with new info
       const output = await this.model.update(inputInfo, {
         where: {walletAddress: req.body.walletAddress}
       })
