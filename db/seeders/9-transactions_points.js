@@ -13,17 +13,17 @@ module.exports = {
       },
       {
         user_id: 1,
-        action_name: "Daily Login for 13 Dec 2023",
+        action_name: "Daily Login for 7 Dec 2023",
         points_allocated: 5,
-        created_at: "2023-12-13T09:51:07.749Z",
-        updated_at: "2023-12-13T09:51:07.749Z",
+        created_at: "2023-12-7T09:51:07.749Z",
+        updated_at: "2023-12-7T09:51:07.749Z",
       },
       {
         user_id: 1,
-        action_name: "Daily Login for 14 Dec 2023",
+        action_name: "Daily Login for 6 Dec 2023",
         points_allocated: 5,
-        created_at: "2023-12-14T09:51:07.749Z",
-        updated_at: "2023-12-14T09:51:07.749Z",
+        created_at: "2023-12-6T09:51:07.749Z",
+        updated_at: "2023-12-6T09:51:07.749Z",
       },
       {
         user_id: 1,
