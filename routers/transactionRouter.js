@@ -9,7 +9,7 @@ class TransactionRouter {
   routes = () => {
     router.get("/", this.transactionPointController.test);
     router.post(
-      "/points/add/:userId",
+      "/points/add/",
       this.transactionPointController.addPoints
     );
 

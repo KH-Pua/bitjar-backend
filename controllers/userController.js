@@ -1,6 +1,5 @@
 const BaseController = require("./baseController");
 const axios = require("axios");
-const rewardPointsSchedule = require("../utilities/rewardPointsSchedule.json") 
 
 const {
   OK,
@@ -186,16 +185,6 @@ class UserController extends BaseController {
   
       return referralCode;
     }
-
-    function generateUsername() {
-      // Generate a random 5-digit number
-      const randomNumber = Math.floor(10000 + Math.random() * 90000);
-  
-      // Combine "User" with the random number
-      const username = "User" + randomNumber;
-  
-      return username;
-    }
   
     try {
       const { walletAddress } = req.body;
@@ -211,8 +200,6 @@ class UserController extends BaseController {
         const registrationData = {
           walletAddress: walletAddress,
           referralCode: generateReferralCode(),
-          userName: generateUsername(),
-          points: rewardPointsSchedule.signUp, 
         }
         // Pass new created user information to output
         const newCreatedUserInfo = await this.model.create(registrationData);
@@ -249,7 +236,34 @@ class UserController extends BaseController {
       const output = await this.model.update(inputInfo, {
         where: {walletAddress: req.body.walletAddress}
       })
-      return res.json({ success: true, data: output });
+      return res.json({ success: true, output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  recordReferrerAndReferree = async (req, res) => {
+    try {
+      let output
+      //get referer user id via referral code
+      const { referralCode } = req.body;
+      const referrerOutput = await this.model.findOne({
+        where: {referralCode: referralCode}
+      })
+      //get referer user id via wallet address
+      const { walletAddress } = req.body;
+      const refereeOutput = await this.model.findOne({
+        where: {walletAddress: walletAddress}
+      })
+      //Register to referrals table
+      if (referrerOutput && refereeOutput) {
+        const registrationData = {
+          refererId: referrerOutput.id,
+          refereeId: refereeOutput.id
+        }
+        output = await this.referralModel.create(registrationData)
+      }
+      return res.json({ success: true, output });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }

@@ -37,12 +37,9 @@ class TransactionPointController extends BaseController {
   };
 
   addPoints = async (req, res) => {
-    const { userId } = req.params;
-    const { actionName, pointsAllocated } = req.body;
+    const { actionName, pointsAllocated, walletAddress} = req.body;
 
-    console.log("addpoints", userId, actionName, pointsAllocated);
-
-    if (!userId || !actionName || !pointsAllocated) {
+    if (!walletAddress || !actionName || !pointsAllocated) {
       return res.status(400).json({
         success: false,
         msg: "Missing details in the request body",
@@ -50,16 +47,18 @@ class TransactionPointController extends BaseController {
     }
     try {
       const output = await this.sequelize.transaction(async (t) => {
+        const user = await this.userModel.findOne({
+          where: {walletAddress: walletAddress}
+        }, { transaction: t })
         const updatePointsTransactions = await this.model.create(
           {
-            userId,
+            userId: user.id,
             actionName,
             pointsAllocated,
           },
           { transaction: t }
         );
         // Find user details within the same transaction
-        const user = await this.userModel.findByPk(userId, { transaction: t });
         if (user) {
           // If the user exists, update the points by adding pointsAllocated
           const updatedPoints = user.points + pointsAllocated;
