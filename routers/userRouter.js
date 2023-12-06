@@ -27,6 +27,9 @@ class UserRouter {
       this.userController.getUserPastTransactions
     );
 
+    // CoinMarketCap APIs - Documentation requires APIs to be called from Backend
+    router.post("/getCoinLatestinfo", this.userController.getCoinLatestInfo);
+
     return router;
   };
 }

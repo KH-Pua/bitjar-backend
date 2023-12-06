@@ -52,6 +52,18 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        user_id: 1, // Gab
+        coin_id: 3, // wETH
+        product_id: 3,
+        amount: "55.014",
+        from_address: "0x4ac5E0c3a1114D47459A818C85348068745d7CD5", // Gab wallet
+        to_address: "wETH Vault",
+        transaction_hash:
+          "0x3a4d8aa74bcd08e66fca6217166bccfeeef0e0f98ee35cb39eb2212a35c5f6a7",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
   },
 

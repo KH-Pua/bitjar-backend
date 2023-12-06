@@ -1,4 +1,5 @@
 const BaseController = require("./baseController");
+const axios = require("axios");
 
 const {
   OK,
@@ -166,6 +167,31 @@ class UserController extends BaseController {
       });
 
       return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  // ---------- CMC Methods ---------- //
+
+  // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
+  getCoinLatestInfo = async (req, res) => {
+    const { coinSYM } = req.body;
+    console.log(coinSYM);
+
+    try {
+      let information = await axios.get(
+        `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${coinSYM}`,
+        {
+          headers: {
+            "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
+          },
+        }
+      );
+
+      // console.log(information.data); // need to add .data for some reason. some circular JSON thing
+
+      return res.json({ success: true, data: information.data });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
