@@ -1,7 +1,13 @@
 const BaseController = require("./baseController");
+const axios = require("axios");
 const rewardPointsSchedule = require("../utilities/rewardPointsSchedule.json") 
 
-const { OK, CREATED, BAD_REQUEST } = require("../constants/statusCodes");
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+} = require("../constants/statusCodes");
 class UserController extends BaseController {
   constructor(
     userModel,
@@ -11,7 +17,8 @@ class UserController extends BaseController {
     transactionPointModel,
     transactionProductModel,
     coinModel,
-    productModel
+    productModel,
+    sequelize
   ) {
     super(userModel);
     this.referralModel = referralModel;
@@ -21,8 +28,36 @@ class UserController extends BaseController {
     this.transactionProductModel = transactionProductModel;
     this.coinModel = coinModel;
     this.productModel = productModel;
+    this.sequelize = sequelize;
   }
 
+  // Get userData from Wallet address
+  getUserData = async (req, res) => {
+    const { address } = req.params;
+    console.log("getuserid", address);
+    try {
+      let user = await this.model.findOne({
+        where: {
+          walletAddress: address,
+        },
+      });
+
+      if (!user) {
+        return res.status(NOT_FOUND).json({
+          success: false,
+          msg: "User ID not found for the given address",
+        });
+      }
+
+      return res.status(OK).json({ success: true, user });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve user data",
+        error: error,
+      });
+    }
+  };
   // Get leaderboard for points sorted by number of points
   getPointsLeaderboard = async (req, res) => {
     try {
@@ -111,31 +146,6 @@ class UserController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: "Unable to retrieve transactions points history",
-      });
-    }
-  };
-
-  addPoints = async (req, res) => {
-    const { userId } = req.params;
-    const { actionName, pointsAllocated } = req.body;
-
-    if (!userId || !actionName || !pointsAllocated) {
-      return res.status(400).json({
-        success: false,
-        msg: "Missing details in the request body",
-      });
-    }
-    try {
-      const addingPoints = await this.transactionPointModel.create({
-        userId,
-        actionName,
-        pointsAllocated,
-      });
-      return res.status(CREATED).json({ success: true, addingPoints });
-    } catch (error) {
-      return res.status(BAD_REQUEST).json({
-        success: false,
-        msg: error.message,
       });
     }
   };
@@ -244,6 +254,31 @@ class UserController extends BaseController {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
- }
+ 
+  // ---------- CMC Methods ---------- //
+
+  // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
+  getCoinLatestInfo = async (req, res) => {
+    const { coinSYM } = req.body;
+    console.log(coinSYM);
+
+    try {
+      let information = await axios.get(
+        `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${coinSYM}`,
+        {
+          headers: {
+            "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
+          },
+        }
+      );
+
+      // console.log(information.data); // need to add .data for some reason. some circular JSON thing
+
+      return res.json({ success: true, data: information.data });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+}
 
 module.exports = UserController;

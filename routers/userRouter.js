@@ -8,6 +8,7 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
+    router.get("/userData/:address", this.userController.getUserData);
     // Points and referral leaderboard data
     router.get("/points/ranking", this.userController.getPointsLeaderboard);
     router.get(
@@ -20,10 +21,6 @@ class UserRouter {
       "/transactions/points/:userId",
       this.userController.getTransactionPointsHistory
     );
-    router.post(
-      "/transactions/points/add/:userId",
-      this.userController.addPoints
-    );
 
     router.post(
       "/getUserPastTransactions",
@@ -33,6 +30,9 @@ class UserRouter {
     router.post("/getInfoViaWalletAdd", this.userController.getInfoViaWalletAdd);
 
     router.put("/editInfo", this.userController.editInfo)
+
+    // CoinMarketCap APIs - Documentation requires APIs to be called from Backend
+    router.post("/getCoinLatestinfo", this.userController.getCoinLatestInfo);
 
     return router;
   };

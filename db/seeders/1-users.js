@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert("users", [
       {
-        wallet_address: "0x4ac5E0c3a1114D47459A818C85348068745d7CD5",
+        wallet_address: "0x4ac5e0c3a1114d47459a818c85348068745d7cd5",
         email: "gbrllim@gmail.com",
         user_name: "pichukaku",
         profile_picture:
