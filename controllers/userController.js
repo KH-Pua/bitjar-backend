@@ -1,5 +1,6 @@
 const BaseController = require("./baseController");
 const axios = require("axios");
+const rewardPointsSchedule = require("../utilities/rewardPointsSchedule.json") 
 
 const {
   OK,
@@ -172,6 +173,88 @@ class UserController extends BaseController {
     }
   };
 
+  getInfoViaWalletAdd = async (req, res) => {
+    function generateReferralCode() {
+      // Define the character set for alphanumeric codes
+      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  
+      // Generate a 6-digit alphanumeric code
+      let referralCode = '';
+      for (let i = 0; i < 6; i++) {
+          referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+  
+      return referralCode;
+    }
+
+    function generateUsername() {
+      // Generate a random 5-digit number
+      const randomNumber = Math.floor(10000 + Math.random() * 90000);
+  
+      // Combine "User" with the random number
+      const username = "User" + randomNumber;
+  
+      return username;
+    }
+  
+    try {
+      const { walletAddress } = req.body;
+      let output
+      //Query for user info that match the wallet address inside db
+      const userInfo = await this.model.findAll({
+        where: {
+          walletAddress: walletAddress
+        }
+      });
+      // Check whether the user is registered.
+      if (userInfo.length === 0) {
+        const registrationData = {
+          walletAddress: walletAddress,
+          referralCode: generateReferralCode(),
+          userName: generateUsername(),
+          points: rewardPointsSchedule.signUp, 
+        }
+        // Pass new created user information to output
+        const newCreatedUserInfo = await this.model.create(registrationData);
+        //newCreatedUserInfo.dataValues["newUser"] = true;
+        //output = newCreatedUserInfo
+        output = {
+          ...newCreatedUserInfo,
+          newUser: true,
+        }
+      } else {
+        // Pass existing user information to output
+        output = {
+          ...userInfo,
+          newUser: false,
+        }
+      }
+      return res.json({ success: true, output });
+    } catch(err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  editInfo = async (req, res) => {
+    try {
+      // Remove the wallet address from the request body
+      const inputInfo = Object.keys(req.body).reduce((item, key) => {
+        if (key !== "walletAddress") {
+          item[key] = req.body[key];
+        }
+        return item;
+      },{});
+
+      //Update the db with new info
+      const output = await this.model.update(inputInfo, {
+        where: {walletAddress: req.body.walletAddress}
+      })
+      return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+ 
   // ---------- CMC Methods ---------- //
 
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
