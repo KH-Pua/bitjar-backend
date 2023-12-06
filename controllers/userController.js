@@ -1,7 +1,4 @@
 const BaseController = require("./baseController");
-// const Sequelize = require("sequelize");
-
-// const sequelize = new Sequelize("postgres://user:pichukaku:5432/bitjar");
 
 const {
   OK,
@@ -143,47 +140,6 @@ class UserController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: "Unable to retrieve transactions points history",
-      });
-    }
-  };
-
-  addPoints = async (req, res) => {
-    const { userId } = req.params;
-    const { actionName, pointsAllocated } = req.body;
-
-    if (!userId || !actionName || !pointsAllocated) {
-      return res.status(400).json({
-        success: false,
-        msg: "Missing details in the request body",
-      });
-    }
-    try {
-      const output = await this.sequelize.transaction(async (t) => {
-        const updatePointsTransactions =
-          await this.transactionPointModel.create(
-            {
-              userId,
-              actionName,
-              pointsAllocated,
-            },
-            { transaction: t }
-          );
-        // Find user details within the same transaction
-        const user = await this.model.findByPk(userId, { transaction: t });
-        if (user) {
-          // If the user exists, update the points by adding pointsAllocated
-          const updatedPoints = user.points + pointsAllocated;
-          // Update the user's points within the transaction
-          await user.update({ points: updatedPoints }, { transaction: t });
-        }
-        return res
-          .status(CREATED)
-          .json({ success: true, message: "Points Added" });
-      });
-    } catch (error) {
-      return res.status(BAD_REQUEST).json({
-        success: false,
-        msg: error.message,
       });
     }
   };

@@ -9,9 +9,11 @@ const PORT = process.env.PORT || 8080;
 
 // Import routers
 const UserRouter = require("./routers/userRouter");
+const TransactionRouter = require("./routers/transactionRouter");
 
 // Import controllers
 const UserController = require("./controllers/userController");
+const TransactionPointController = require("./controllers/transactionPointController");
 
 // Import db
 const db = require("./db/models");
@@ -38,8 +40,15 @@ const userController = new UserController(
   sequelize
 );
 
+const transactionPointController = new TransactionPointController(
+  transactionPoint,
+  user,
+  sequelize
+);
+
 // Initialize routers
 const userRouter = new UserRouter(userController);
+const transactionRouter = new TransactionRouter(transactionPointController);
 
 const app = express();
 
@@ -66,6 +75,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRouter.routes());
+app.use("/transactions", transactionRouter.routes());
 
 app.listen(PORT, () => {
   console.log(`Bitjar app listening on port ${PORT}!`);

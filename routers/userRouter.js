@@ -21,11 +21,6 @@ class UserRouter {
       "/transactions/points/:userId",
       this.userController.getTransactionPointsHistory
     );
-    router.post(
-      "/transactions/points/add/:userId",
-      this.userController.addPoints
-    );
-
     return router;
   };
 }
