@@ -8,6 +8,7 @@ class UserRouter {
 
   routes = () => {
     router.get("/", this.userController.test);
+    router.get("/userData/:address", this.userController.getUserData);
     // Points and referral leaderboard data
     router.get("/points/ranking", this.userController.getPointsLeaderboard);
     router.get(
@@ -19,10 +20,6 @@ class UserRouter {
     router.get(
       "/transactions/points/:userId",
       this.userController.getTransactionPointsHistory
-    );
-    router.post(
-      "/transactions/points/add/:userId",
-      this.userController.addPoints
     );
 
     router.post(
