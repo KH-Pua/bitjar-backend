@@ -9,7 +9,7 @@ class BaseController {
 
   test = (req, res) => {
     return res.send(
-      `This is my awesome deployed new ${this.model.name} controller`
+      `This is my super awesome deployed new ${this.model.name} controller`
     );
   };
 
