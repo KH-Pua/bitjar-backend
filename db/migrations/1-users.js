@@ -33,7 +33,7 @@ module.exports = {
         allowNull: false,
       },
       points: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       created_at: {

@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       points: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
     },
