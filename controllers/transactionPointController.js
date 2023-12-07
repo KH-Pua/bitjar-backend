@@ -53,7 +53,9 @@ class TransactionPointController extends BaseController {
   };
 
   addPoints = async (req, res) => {
-    const { actionName, pointsAllocated, walletAddress} = req.body;
+    const { actionName, pointsAllocated, walletAddress } = req.body;
+
+    console.log("addpoints", actionName, pointsAllocated, walletAddress);
 
     if (!walletAddress || !actionName || !pointsAllocated) {
       return res.status(400).json({
@@ -63,9 +65,12 @@ class TransactionPointController extends BaseController {
     }
     try {
       const output = await this.sequelize.transaction(async (t) => {
-        const user = await this.userModel.findOne({
-          where: {walletAddress: walletAddress}
-        }, { transaction: t })
+        const user = await this.userModel.findOne(
+          {
+            where: { walletAddress: walletAddress },
+          },
+          { transaction: t }
+        );
         const updatePointsTransactions = await this.model.create(
           {
             userId: user.id,

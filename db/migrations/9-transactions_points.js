@@ -30,7 +30,7 @@ module.exports = {
         allowNull: false,
       },
       points_allocated: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       transaction_product_id: {
