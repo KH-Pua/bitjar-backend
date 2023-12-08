@@ -18,6 +18,12 @@ module.exports = {
       },
       {
         coin_symbol: "wETH",
+        coin_name: "Wrapped Ethereum",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        coin_symbol: "ETH",
         coin_name: "Ethereum",
         created_at: new Date(),
         updated_at: new Date(),
