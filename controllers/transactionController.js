@@ -28,15 +28,18 @@ class TransactionController extends BaseController {
 
   // Check against transaction_point for any daily login points claimed by the user
   checkDailyPointsClaim = async (req, res) => {
-    const { userId } = req.params;
+    const { address } = req.params;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
     try {
+      const user = await this.userModel.findOne({
+        where: { walletAddress: address },
+      });
       const result = await this.model.findOne({
         where: {
-          userId,
+          userId: user.id,
           actionName: {
             [Op.startsWith]: "Daily Login", // Using Sequelize operator to find actionName starting with 'daily login'
           },
@@ -60,6 +63,32 @@ class TransactionController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: error.message,
+      });
+    }
+  };
+
+  getTransactionPointsHistory = async (req, res) => {
+    const { address } = req.params;
+
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing address in the request body",
+      });
+    }
+    try {
+      const user = await this.userModel.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await this.model.findAll({
+        where: { userId: user.id },
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+      });
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve transactions points history",
       });
     }
   };

@@ -17,10 +17,6 @@ class UserRouter {
     );
     router.get("/referrals/:userId", this.userController.getReferralHistory);
     // Transaction Points
-    router.get(
-      "/transactions/points/:userId",
-      this.userController.getTransactionPointsHistory
-    );
 
     router.post(
       "/getUserPastTransactions",
