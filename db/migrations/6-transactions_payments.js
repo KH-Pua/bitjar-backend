@@ -56,6 +56,7 @@ module.exports = {
       transaction_hash: {
         type: Sequelize.STRING,
         allowNull: true, // Allow for payment failure
+        unique: true,
       },
 
       created_at: {

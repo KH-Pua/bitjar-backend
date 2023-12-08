@@ -26,12 +26,13 @@ class TransactionController extends BaseController {
     this.sequelize = sequelize;
   }
 
-  // Check against transaction_point for any daily login points claimed by the user
+  //-----------Points Routes-----------//
+
   checkDailyPointsClaim = async (req, res) => {
     const { address } = req.params;
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
+    today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and ms to 0 for comparison
 
     try {
       const user = await this.userModel.findOne({
@@ -41,20 +42,17 @@ class TransactionController extends BaseController {
         where: {
           userId: user.id,
           actionName: {
-            [Op.startsWith]: "Daily Login", // Using Sequelize operator to find actionName starting with 'daily login'
+            [Op.startsWith]: "Daily Login", // Find actionName starting with 'daily login'
           },
           createdAt: {
-            [Op.gte]: today, // Using Sequelize operator for 'greater than or equal to' today's date
+            [Op.gte]: today, // 'greater than or equal to' today's date
           },
         },
       });
 
-      console.log("Matching", result);
       if (result) {
-        console.log("Matching row:", result);
         return res.status(OK).json({ success: true, result });
       } else {
-        console.log("No matching row found");
         return res
           .status(NOT_FOUND)
           .json({ success: false, message: "No matching row found" });
@@ -95,8 +93,6 @@ class TransactionController extends BaseController {
 
   addPoints = async (req, res) => {
     const { actionName, pointsAllocated, walletAddress } = req.body;
-
-    console.log("addpoints", actionName, pointsAllocated, walletAddress);
 
     if (!walletAddress || !actionName || !pointsAllocated) {
       return res.status(400).json({
@@ -139,6 +135,8 @@ class TransactionController extends BaseController {
       });
     }
   };
+
+  //-----------Payment Routes-----------//
 
   getTransactionPaymentsHistory = async (req, res) => {
     const { address } = req.params;
@@ -214,7 +212,7 @@ class TransactionController extends BaseController {
           },
           { transaction: t }
         );
-        // Step 3: Create transaction
+        // Step 3: Create transaction in transactionPaymentModel
         const newPayment = await this.transactionPaymentModel.create(
           {
             userId: user.id,
@@ -251,8 +249,37 @@ class TransactionController extends BaseController {
     } catch (error) {
       return res.status(BAD_REQUEST).json({
         success: false,
-        msg: error.message,
+        msg: error.errors,
       });
+    }
+  };
+
+  //-----------Product Routes-----------//
+
+  getTransactionProductHistory = async (req, res) => {
+    const { address } = req.params;
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        msg: "getTransactionProductHistory: Missing address in the request body",
+      });
+    }
+    try {
+      let user = await this.userModel.findOne({
+        where: {
+          walletAddress: address,
+        },
+      });
+      const output = await user.getTransactionProducts({
+        include: [
+          { model: this.coinModel, attributes: ["coinName"] },
+          { model: this.productModel, attributes: ["productName"] },
+        ],
+      });
+
+      return res.json({ success: true, data: output });
+    } catch (err) {
+      return res.status(BAD_REQUEST).json({ success: false, msg: err.message });
     }
   };
 }

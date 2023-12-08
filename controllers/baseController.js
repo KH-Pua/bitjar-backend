@@ -13,10 +13,10 @@ class BaseController {
     );
   };
 
-  getAll = async (req, res) => {
-    const output = await this.model.findAll();
-    return res.json({ success: true, data: output });
-  };
+  // getAll = async (req, res) => {
+  //   const output = await this.model.findAll();
+  //   return res.json({ success: true, data: output });
+  // };
 
   getOne = async (req, res) => {
     const { id } = req.params;

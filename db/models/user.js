@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       referralCode: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       points: {
         type: DataTypes.FLOAT,

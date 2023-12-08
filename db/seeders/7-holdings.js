@@ -13,6 +13,14 @@ module.exports = {
         updated_at: new Date(),
       },
       {
+        user_id: 1, // Gab
+        coin_id: 3, // wBTC
+        product_id: 3, // wBTC AAVE
+        amount: "55.014",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
         user_id: 2, // Kee Hui
         coin_id: 1, // wBTC
         product_id: 1, // wBTC AAVE
