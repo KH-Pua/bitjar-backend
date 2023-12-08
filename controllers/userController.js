@@ -126,6 +126,43 @@ class UserController extends BaseController {
     }
   };
 
+  // Get the Referer of a walletaddress, if any
+  getUserRefererIfAny = async (req, res) => {
+    const { walletAddress } = req.body;
+
+    if (!walletAddress) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing details in the request body",
+      });
+    }
+
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: walletAddress },
+      });
+
+      let data = await this.referralModel.findAll({
+        where: { refereeId: user.id },
+      });
+
+      // Is there a better way to do this query?
+      if (data.length != 0 && data[0].dataValues.refererId) {
+        const output = await this.model.findOne({
+          where: { id: data[0].dataValues.refererId },
+        });
+        return res.status(OK).json({ success: true, output: output });
+      }
+
+      return res.status(OK).json({ success: true, output: data });
+    } catch (err) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: err.message,
+      });
+    }
+  };
+
   getTransactionPointsHistory = async (req, res) => {
     const { userId } = req.params;
 
@@ -175,33 +212,36 @@ class UserController extends BaseController {
   getInfoViaWalletAdd = async (req, res) => {
     function generateReferralCode() {
       // Define the character set for alphanumeric codes
-      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  
+      const characters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
       // Generate a 6-digit alphanumeric code
-      let referralCode = '';
+      let referralCode = "";
       for (let i = 0; i < 6; i++) {
-          referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+        referralCode += characters.charAt(
+          Math.floor(Math.random() * characters.length)
+        );
       }
-  
+
       return referralCode;
     }
-  
+
     try {
       const { walletAddress } = req.body;
-      let output
+      let output;
       //Query for user info that match the wallet address inside db
       const userInfo = await this.model.findOne({
         where: {
-          walletAddress: walletAddress
-        }
+          walletAddress: walletAddress,
+        },
       });
       // Check whether the user is registered.
       if (!userInfo) {
         const registrationData = {
           walletAddress: walletAddress,
           referralCode: generateReferralCode(),
-          points: 0
-        }
+          points: 0,
+        };
         // Pass new created user information to output
         const newCreatedUserInfo = await this.model.create(registrationData);
         //newCreatedUserInfo.dataValues["newUser"] = true;
@@ -209,25 +249,25 @@ class UserController extends BaseController {
         output = {
           ...newCreatedUserInfo,
           newUser: true,
-        }
+        };
       } else {
         // Pass existing user information to output
         output = {
           ...userInfo,
           newUser: false,
-        }
+        };
       }
       return res.json({ success: true, output });
-    } catch(err) {
+    } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
 
   getUserDataViaReferralCode = async (req, res) => {
     try {
-      const {referralCode} = req.body;
+      const { referralCode } = req.body;
       const output = await this.model.findOne({
-        where: {referralCode: referralCode}
+        where: { referralCode: referralCode },
       });
       return res.json({ success: true, output });
     } catch (err) {
@@ -243,12 +283,12 @@ class UserController extends BaseController {
           item[key] = req.body[key];
         }
         return item;
-      },{});
+      }, {});
 
       //Update the db with new info
       const output = await this.model.update(inputInfo, {
-        where: {walletAddress: req.body.walletAddress}
-      })
+        where: { walletAddress: req.body.walletAddress },
+      });
       return res.json({ success: true, output });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
@@ -257,31 +297,31 @@ class UserController extends BaseController {
 
   recordReferrerAndReferree = async (req, res) => {
     try {
-      let output
+      let output;
       //get referer user id via referral code
       const { referralCode } = req.body;
       const referrerOutput = await this.model.findOne({
-        where: {referralCode: referralCode}
-      })
+        where: { referralCode: referralCode },
+      });
       //get referee user id via wallet address
       const { walletAddress } = req.body;
       const refereeOutput = await this.model.findOne({
-        where: {walletAddress: walletAddress}
-      })
+        where: { walletAddress: walletAddress },
+      });
       //Register to referrals table
       if (referrerOutput && refereeOutput) {
         const registrationData = {
           refererId: referrerOutput.id,
-          refereeId: refereeOutput.id
-        }
-        output = await this.referralModel.create(registrationData)
+          refereeId: refereeOutput.id,
+        };
+        output = await this.referralModel.create(registrationData);
       }
       return res.json({ success: true, output });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
- 
+
   // ---------- CMC Methods ---------- //
 
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
