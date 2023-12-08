@@ -27,13 +27,27 @@ class UserRouter {
       this.userController.getUserPastTransactions
     );
 
-    router.post("/getInfoViaWalletAdd", this.userController.getInfoViaWalletAdd);
+    router.post(
+      "/getInfoViaWalletAdd",
+      this.userController.getInfoViaWalletAdd
+    );
 
-    router.post("/getUserDataViaReferralCode", this.userController.getUserDataViaReferralCode)
+    router.post(
+      "/getUserDataViaReferralCode",
+      this.userController.getUserDataViaReferralCode
+    );
 
-    router.post("/editInfo", this.userController.editInfo)
+    router.post("/editInfo", this.userController.editInfo);
 
-    router.post("/recordReferrerAndReferree", this.userController.recordReferrerAndReferree)
+    router.post(
+      "/recordReferrerAndReferree",
+      this.userController.recordReferrerAndReferree
+    );
+
+    router.post(
+      "/getUserRefererIfAny",
+      this.userController.getUserRefererIfAny
+    );
 
     // CoinMarketCap APIs - Documentation requires APIs to be called from Backend
     router.post("/getCoinLatestinfo", this.userController.getCoinLatestInfo);
