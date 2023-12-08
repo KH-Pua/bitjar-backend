@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       transactionHash: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: true, // Allow for payment failure
       },
     },

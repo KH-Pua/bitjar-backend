@@ -13,7 +13,7 @@ const TransactionRouter = require("./routers/transactionRouter");
 
 // Import controllers
 const UserController = require("./controllers/userController");
-const TransactionPointController = require("./controllers/transactionPointController");
+const TransactionController = require("./controllers/transactionController");
 
 // Import db
 const db = require("./db/models");
@@ -42,15 +42,19 @@ const userController = new UserController(
   sequelize
 );
 
-const transactionPointController = new TransactionPointController(
+const transactionController = new TransactionController(
   transactionPoint,
+  transactionPayment,
+  transactionProduct,
   user,
+  coin,
+  product,
   sequelize
 );
 
 // Initialize routers
 const userRouter = new UserRouter(userController);
-const transactionRouter = new TransactionRouter(transactionPointController);
+const transactionRouter = new TransactionRouter(transactionController);
 
 const app = express();
 

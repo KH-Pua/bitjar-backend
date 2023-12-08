@@ -36,6 +36,7 @@ module.exports = {
       transaction_product_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        onDelete: "SET NULL",
         references: {
           model: "transaction_products",
           key: "id",
@@ -44,6 +45,7 @@ module.exports = {
       transaction_payment_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        onDelete: "SET NULL",
         references: {
           model: "transaction_payments",
           key: "id",

@@ -106,10 +106,13 @@ class UserController extends BaseController {
   };
 
   getReferralHistory = async (req, res) => {
-    const { userId } = req.params;
+    const { address } = req.params;
     try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
       let output = await this.referralModel.findAll({
-        where: { refererId: userId },
+        where: { refererId: user.id },
         include: {
           model: this.model,
           as: "referee",
@@ -159,29 +162,6 @@ class UserController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: err.message,
-      });
-    }
-  };
-
-  getTransactionPointsHistory = async (req, res) => {
-    const { userId } = req.params;
-
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        msg: "Missing userId in the request body",
-      });
-    }
-    try {
-      let output = await this.transactionPointModel.findAll({
-        where: { userId: userId },
-        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
-      });
-      return res.status(OK).json({ success: true, output });
-    } catch (error) {
-      return res.status(BAD_REQUEST).json({
-        success: false,
-        msg: "Unable to retrieve transactions points history",
       });
     }
   };
