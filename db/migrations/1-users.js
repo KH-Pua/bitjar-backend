@@ -31,6 +31,7 @@ module.exports = {
       referral_code: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       points: {
         type: Sequelize.FLOAT,

@@ -19,11 +19,6 @@ class UserRouter {
     //-----------Transaction Routes-----------//
 
     router.post(
-      "/getUserPastTransactions",
-      this.userController.getUserPastTransactions
-    );
-
-    router.post(
       "/getInfoViaWalletAdd",
       this.userController.getInfoViaWalletAdd
     );
@@ -44,6 +39,10 @@ class UserRouter {
       "/getUserRefererIfAny",
       this.userController.getUserRefererIfAny
     );
+
+    //-----------Holdings Routes-----------//
+
+    router.get("/holdings/:address", this.userController.getHoldings);
 
     // CoinMarketCap APIs - Documentation requires APIs to be called from Backend
     router.post("/getCoinLatestinfo", this.userController.getCoinLatestInfo);

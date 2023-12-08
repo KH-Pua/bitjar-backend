@@ -166,28 +166,24 @@ class UserController extends BaseController {
     }
   };
 
-  getUserPastTransactions = async (req, res) => {
-    const { userId } = req.body;
-    try {
-      // console.log(this.transactionProductModel);
-      // console.log(userId);
-      // let output = await this.transactionProductModel.findAll({
-      //   where: { userId: userId },
-      // });
+  // ---------- Moved to transactions
+  // getUserPastTransactions = async (req, res) => {
+  //   const { userId } = req.body;
+  //   try {
 
-      let user = await this.model.findByPk(userId);
-      const output = await user.getTransactionProducts({
-        include: [
-          { model: this.coinModel, attributes: ["coinName"] },
-          { model: this.productModel, attributes: ["productName"] },
-        ],
-      });
+  //     let user = await this.model.findByPk(userId);
+  //     const output = await user.getTransactionProducts({
+  //       include: [
+  //         { model: this.coinModel, attributes: ["coinName"] },
+  //         { model: this.productModel, attributes: ["productName"] },
+  //       ],
+  //     });
 
-      return res.json({ success: true, data: output });
-    } catch (err) {
-      return res.status(500).json({ success: false, msg: err.message });
-    }
-  };
+  //     return res.json({ success: true, data: output });
+  //   } catch (err) {
+  //     return res.status(500).json({ success: false, msg: err.message });
+  //   }
+  // };
 
   getInfoViaWalletAdd = async (req, res) => {
     function generateReferralCode() {
@@ -302,6 +298,31 @@ class UserController extends BaseController {
     }
   };
 
+  getHoldings = async (req, res) => {
+    const { address } = req.params;
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await user.getHoldings({
+        include: [
+          {
+            model: this.productModel,
+          },
+          { model: this.coinModel },
+        ],
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        error,
+        msg: "Unable to retrieve referral holdings data",
+      });
+    }
+  };
+
   // ---------- CMC Methods ---------- //
 
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
@@ -318,7 +339,6 @@ class UserController extends BaseController {
           },
         }
       );
-
       // console.log(information.data); // need to add .data for some reason. some circular JSON thing
 
       return res.json({ success: true, data: information.data });

@@ -24,6 +24,11 @@ class TransactionRouter {
       "/payments/:address",
       this.transactionController.getTransactionPaymentsHistory
     );
+    //-----------Product Routes-----------//
+    router.get(
+      "/products/:address",
+      this.transactionController.getTransactionProductHistory
+    );
 
     return router;
   };
