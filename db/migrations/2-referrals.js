@@ -28,6 +28,7 @@ module.exports = {
       referee_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: true,
         references: {
           model: "users",
           key: "id",
