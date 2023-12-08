@@ -8,6 +8,7 @@ class TransactionRouter {
 
   routes = () => {
     router.get("/", this.transactionController.test);
+    //-----------Points Routes-----------//
     router.get(
       "/points/dailyCheck/:address",
       this.transactionController.checkDailyPointsClaim
@@ -17,6 +18,7 @@ class TransactionRouter {
       "/points/:address",
       this.transactionController.getTransactionPointsHistory
     );
+    //-----------Payment Routes-----------//
     router.post("/payments/add", this.transactionController.addPayment);
     router.get(
       "/payments/:address",

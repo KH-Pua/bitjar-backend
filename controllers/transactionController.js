@@ -52,11 +52,11 @@ class TransactionController extends BaseController {
       console.log("Matching", result);
       if (result) {
         console.log("Matching row:", result);
-        return res.status(200).json({ success: true, result });
+        return res.status(OK).json({ success: true, result });
       } else {
         console.log("No matching row found");
         return res
-          .status(404)
+          .status(NOT_FOUND)
           .json({ success: false, message: "No matching row found" });
       }
     } catch (error) {
@@ -89,35 +89,6 @@ class TransactionController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: "Unable to retrieve transactions points history",
-      });
-    }
-  };
-
-  getTransactionPaymentsHistory = async (req, res) => {
-    const { address } = req.params;
-
-    if (!address) {
-      return res.status(400).json({
-        success: false,
-        msg: "Missing address in the request body",
-      });
-    }
-    try {
-      let user = await this.userModel.findOne({
-        where: {
-          walletAddress: address,
-        },
-      });
-      let output = await this.transactionPaymentModel.findAll({
-        include: { model: this.coinModel },
-        where: { userId: user.id },
-        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
-      });
-      return res.status(OK).json({ success: true, output });
-    } catch (error) {
-      return res.status(BAD_REQUEST).json({
-        success: false,
-        msg: "Unable to retrieve transactions payment history",
       });
     }
   };
@@ -165,6 +136,35 @@ class TransactionController extends BaseController {
       return res.status(BAD_REQUEST).json({
         success: false,
         msg: error.message,
+      });
+    }
+  };
+
+  getTransactionPaymentsHistory = async (req, res) => {
+    const { address } = req.params;
+
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing address in the request body",
+      });
+    }
+    try {
+      let user = await this.userModel.findOne({
+        where: {
+          walletAddress: address,
+        },
+      });
+      let output = await this.transactionPaymentModel.findAll({
+        include: { model: this.coinModel },
+        where: { userId: user.id },
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+      });
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "Unable to retrieve transactions payment history",
       });
     }
   };

@@ -106,10 +106,13 @@ class UserController extends BaseController {
   };
 
   getReferralHistory = async (req, res) => {
-    const { userId } = req.params;
+    const { address } = req.params;
     try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
       let output = await this.referralModel.findAll({
-        where: { refererId: userId },
+        where: { refererId: user.id },
         include: {
           model: this.model,
           as: "referee",
