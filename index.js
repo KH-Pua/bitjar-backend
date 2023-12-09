@@ -60,7 +60,7 @@ const app = express();
 
 // Cors options setup
 const allowedOrigins = [
-  "https://bitjar.netlify.app",
+  "https://bitjar.xyz",
   "http://localhost:3000", // Add localhost:3000 as an allowed origin
 ];
 
