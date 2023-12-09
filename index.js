@@ -5,6 +5,9 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
 
+// Import APY updater
+const apyUpdateJob = require("./scripts/apyUpdater")
+
 // Import middlewares
 
 // Import routers
@@ -58,6 +61,9 @@ const userRouter = new UserRouter(userController);
 const transactionRouter = new TransactionRouter(transactionController);
 
 const app = express();
+
+// Call to update products table "apr" column
+apyUpdateJob.start();
 
 // Cors options setup
 const allowedOrigins = [

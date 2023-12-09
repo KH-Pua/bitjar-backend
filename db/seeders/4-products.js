@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.bulkInsert("products", [
       {
-        product_name: "wBTC AAVE",
+        product_name: "WBTC AAVE",
         apr: 0.0116,
         created_at: new Date(),
         updated_at: new Date(),
@@ -17,7 +17,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        product_name: "wETH AAVE",
+        product_name: "WETH AAVE",
         apr: 0.0186,
         created_at: new Date(),
         updated_at: new Date(),
