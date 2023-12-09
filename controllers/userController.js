@@ -202,8 +202,7 @@ class UserController extends BaseController {
         };
         // Pass new created user information to output
         const newCreatedUserInfo = await this.model.create(registrationData);
-        //newCreatedUserInfo.dataValues["newUser"] = true;
-        //output = newCreatedUserInfo
+
         output = {
           ...newCreatedUserInfo,
           newUser: true,
@@ -223,29 +222,22 @@ class UserController extends BaseController {
 
   getUserDataViaReferralCode = async (req, res) => {
     try {
-      const { referralCode } = req.body;
-      const output = await this.model.findOne({
-        where: { referralCode: referralCode },
+      const refererCode = req.body.refererCode;
+      console.log(refererCode);
+      const referer = await this.model.findOne({
+        where: { referralCode: refererCode },
       });
-      return res.json({ success: true, output });
+      return res.json({ success: true, referer });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
   };
 
   editInfo = async (req, res) => {
+    const data = req.body;
     try {
-      // Remove the wallet address from the request body
-      const inputInfo = Object.keys(req.body).reduce((item, key) => {
-        if (key !== "walletAddress") {
-          item[key] = req.body[key];
-        }
-        return item;
-      }, {});
-
-      //Update the db with new info
-      const output = await this.model.update(inputInfo, {
-        where: { walletAddress: req.body.walletAddress },
+      const output = await this.model.update(data, {
+        where: { walletAddress: data.walletAddress },
       });
       return res.json({ success: true, output });
     } catch (err) {
@@ -253,28 +245,70 @@ class UserController extends BaseController {
     }
   };
 
-  recordReferrerAndReferree = async (req, res) => {
+  recordReferral = async (req, res) => {
+    const { refereeId, refererId } = req.body;
+    console.log("recordRerral", req.body);
+
     try {
       let output;
       //get referer user id via referral code
-      const { referralCode } = req.body;
-      const referrerOutput = await this.model.findOne({
-        where: { referralCode: referralCode },
-      });
+      // const { referralCode } = req.body;
+      // const referrerOutput = await this.model.findOne({
+      //   where: { referralCode: referralCode },
+      // });
       //get referee user id via wallet address
-      const { walletAddress } = req.body;
-      const refereeOutput = await this.model.findOne({
-        where: { walletAddress: walletAddress },
-      });
+      // const { walletAddress } = req.body;
+      // const refereeOutput = await this.model.findOne({
+      //   where: { walletAddress: walletAddress },
+      // });
       //Register to referrals table
-      if (referrerOutput && refereeOutput) {
-        const registrationData = {
-          refererId: referrerOutput.id,
-          refereeId: refereeOutput.id,
-        };
-        output = await this.referralModel.create(registrationData);
+      if (refereeId && refererId) {
+        // const registrationData = {
+        //   refererId: referrerOutput.id,
+        //   refereeId: refereeOutput.id,
+        // };
+        output = await this.referralModel.create(req.body);
       }
       return res.json({ success: true, output });
+    } catch (err) {
+      return res.status(500).json({ success: false, msg: err.message });
+    }
+  };
+
+  checkAndRecordReferral = async (req, res) => {
+    const refereeAddress = req.body.walletAddress;
+    const refererCode = req.body.refererCode;
+
+    try {
+      await this.sequelize.transaction(async (t) => {
+        // Step 1: Get referer details
+        const referer = await this.model.findOne(
+          {
+            where: { referralCode: refererCode },
+          },
+          { transaction: t }
+        );
+        // Step 2: Get referee details
+        const referee = await this.model.findOne(
+          {
+            where: { walletAddress: refereeAddress },
+          },
+          { transaction: t }
+        );
+        // Step 3: Update Referral Table
+        await this.referralModel.create(
+          {
+            refererId: referer.id,
+            refereeId: referee.id,
+          },
+          { transaction: t }
+        );
+        // Step 4: Update Points to referer
+        const updatedPoints = referer.points + 10;
+        await referer.update({ points: updatedPoints }, { transaction: t });
+
+        return res.json({ success: true, msg: "Referral Recorded" });
+      });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }

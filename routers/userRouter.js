@@ -18,6 +18,8 @@ class UserRouter {
     router.get("/referrals/:address", this.userController.getReferralHistory);
     //-----------Transaction Routes-----------//
 
+    router.post("/referrals/add", this.userController.checkAndRecordReferral);
+
     router.post(
       "/getInfoViaWalletAdd",
       this.userController.getInfoViaWalletAdd
@@ -30,10 +32,7 @@ class UserRouter {
 
     router.post("/editInfo", this.userController.editInfo);
 
-    router.post(
-      "/recordReferrerAndReferree",
-      this.userController.recordReferrerAndReferree
-    );
+    router.post("/recordReferral", this.userController.recordReferral);
 
     router.post(
       "/getUserRefererIfAny",

@@ -197,7 +197,7 @@ class TransactionController extends BaseController {
       });
     }
     try {
-      const output = await this.sequelize.transaction(async (t) => {
+      await this.sequelize.transaction(async (t) => {
         // Step 1: Get userId from toAddress - userModel
         const user = await this.userModel.findOne(
           {
