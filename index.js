@@ -8,8 +8,6 @@ const PORT = process.env.PORT || 8080;
 // Import APY updater
 const apyUpdateJob = require("./scripts/apyUpdater");
 
-// Import middlewares
-
 // Import routers
 const UserRouter = require("./routers/userRouter");
 const TransactionRouter = require("./routers/transactionRouter");

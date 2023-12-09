@@ -25,14 +25,12 @@ class UserRouter {
       this.userController.getInfoViaWalletAdd
     );
 
-    router.post(
-      "/getUserDataViaReferralCode",
-      this.userController.getUserDataViaReferralCode
-    );
+    // router.post(
+    //   "/getUserDataViaReferralCode",
+    //   this.userController.getUserDataViaReferralCode
+    // );
 
     router.post("/editInfo", this.userController.editInfo);
-
-    router.post("/recordReferral", this.userController.recordReferral);
 
     router.post(
       "/getUserRefererIfAny",
