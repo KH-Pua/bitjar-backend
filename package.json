@@ -15,6 +15,7 @@
     "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.11",
     "eslint": "^8.16.0"
   }
 }
