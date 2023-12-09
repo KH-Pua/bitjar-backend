@@ -9,7 +9,7 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("transactions_payments", {
+    await queryInterface.createTable("transaction_payments", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -56,6 +56,7 @@ module.exports = {
       transaction_hash: {
         type: Sequelize.STRING,
         allowNull: true, // Allow for payment failure
+        unique: true,
       },
 
       created_at: {
@@ -76,6 +77,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("transactions_payments");
+    await queryInterface.dropTable("transaction_payments");
   },
 };
