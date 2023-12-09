@@ -84,5 +84,7 @@ app.use("/users", userRouter.routes());
 app.use("/transactions", transactionRouter.routes());
 
 app.listen(PORT, () => {
-  console.log(`Bitjar app listening on port ${PORT}!`);
+  console.log(
+    `Bitjar app listening on port ${PORT} in ${process.env.NODE_ENV} mode`
+  );
 });

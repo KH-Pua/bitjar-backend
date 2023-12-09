@@ -7,6 +7,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
 } = require("../constants/statusCodes");
+
 class UserController extends BaseController {
   constructor(
     userModel,
@@ -165,25 +166,6 @@ class UserController extends BaseController {
       });
     }
   };
-
-  // ---------- Moved to transactions
-  // getUserPastTransactions = async (req, res) => {
-  //   const { userId } = req.body;
-  //   try {
-
-  //     let user = await this.model.findByPk(userId);
-  //     const output = await user.getTransactionProducts({
-  //       include: [
-  //         { model: this.coinModel, attributes: ["coinName"] },
-  //         { model: this.productModel, attributes: ["productName"] },
-  //       ],
-  //     });
-
-  //     return res.json({ success: true, data: output });
-  //   } catch (err) {
-  //     return res.status(500).json({ success: false, msg: err.message });
-  //   }
-  // };
 
   getInfoViaWalletAdd = async (req, res) => {
     function generateReferralCode() {
