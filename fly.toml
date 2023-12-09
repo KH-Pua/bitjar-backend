@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for bitjar-backend on 2023-12-09T10:53:01+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "bitjar-backend"
+primary_region = "sin"
+
+[build]
+
+[deploy]
+  release_command = "sh ./release.sh"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
