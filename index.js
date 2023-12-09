@@ -49,6 +49,7 @@ const transactionController = new TransactionController(
   user,
   coin,
   product,
+  holding,
   sequelize
 );
 

@@ -15,6 +15,7 @@ class TransactionController extends BaseController {
     userModel,
     coinModel,
     productModel,
+    holdingModel,
     sequelize
   ) {
     super(transactionPointModel);
@@ -23,6 +24,7 @@ class TransactionController extends BaseController {
     this.userModel = userModel;
     this.coinModel = coinModel;
     this.productModel = productModel;
+    this.holdingModel = holdingModel;
     this.sequelize = sequelize;
   }
 
@@ -280,6 +282,271 @@ class TransactionController extends BaseController {
       return res.json({ success: true, data: output });
     } catch (err) {
       return res.status(BAD_REQUEST).json({ success: false, msg: err.message });
+    }
+  };
+
+  depositCoinToPlatform = async (req, res) => {
+    const { depositAmount, token, poolAddress, walletAddress } = req.body;
+
+    if (!depositAmount || !token || !poolAddress || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing details in the request body",
+      });
+    }
+
+    try {
+      const output = await this.sequelize.transaction(async (t) => {
+        // Get the User that made this transaction
+        const user = await this.userModel.findOne(
+          {
+            where: { walletAddress: walletAddress },
+          },
+          { transaction: t }
+        );
+
+        // Get the Token's corresponding coin_id -
+        // Currently only wBTC, USDC, wETH,ETH (NOTE: No USDC)
+        const coin = await this.coinModel.findOne(
+          {
+            where: { coinSymbol: token },
+          },
+          { transaction: t }
+        );
+
+        // Can be refactored for more products in the future
+        let productId;
+        if (token == "sepoliaWBTC") {
+          productId = 1;
+        }
+        if (token == "sepoliaUSDC") {
+          productId = 2;
+        }
+        if (token == "sepoliaWETH") {
+          productId = 3;
+        }
+
+        // Step 1: CREATE new entry transaction_products - So that we can store transaction history in our database to display
+        const newProductsEntry = await this.transactionProductModel.create(
+          {
+            userId: user.id,
+            coinId: coin.id,
+            productId: productId,
+            amount: depositAmount,
+            fromAddress: walletAddress,
+            toAddress: poolAddress,
+            transactionHash: "",
+          },
+          { transaction: t }
+        );
+
+        // Step 2: CREATE new entry in transaction_points table
+        const productName = await this.productModel.findOne(
+          {
+            where: { id: productId },
+          },
+          { transaction: t }
+        );
+
+        const newPointsTransaction = await this.model.create(
+          {
+            userId: user.id,
+            actionName: `Deposited ${token} into ${productName.productName}`, // Aave can be contract address as well
+            pointsAllocated: 100,
+            transactionProductId: newProductsEntry.id,
+            transactionPaymentId: null, // Not a Payment, so null
+          },
+          { transaction: t }
+        );
+
+        // Step 3: Update Holdings row for corresponding User (?)
+        // If no such row is found, ADD a row to Holdings
+        try {
+          const correspondingHolding = await this.holdingModel.findOne(
+            {
+              where: {
+                userId: user.id,
+                coinId: coin.id,
+                productId: productId,
+              },
+            },
+            { transaction: t }
+          );
+
+          let newAmount = correspondingHolding.amount + depositAmount;
+
+          const updateHoldingsForUser = await correspondingHolding.update(
+            {
+              userId: user.id,
+              productId: productId,
+              coinId: coin.id,
+              amount: newAmount,
+            },
+            { transaction: t }
+          );
+        } catch (err) {
+          const addHoldingsForUser = await this.holdingModel.create(
+            {
+              userId: user.id,
+              coinId: coin.id,
+              productId: productId,
+              amount: depositAmount,
+            },
+            { transaction: t }
+          );
+        }
+
+        // Step 4: UPDATE points held by corresponding user.
+        let updatedPoints = user.points + newPointsTransaction.pointsAllocated;
+        const updatedUserPoints = await user.update(
+          { points: updatedPoints },
+          { transaction: t }
+        );
+
+        return res.status(CREATED).json({
+          success: true,
+          message:
+            "Product Transaction Added, Holdings Updated, Points Updated",
+        });
+      });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "damn " + error.message,
+      });
+    }
+  };
+
+  withdrawCoinToPlatform = async (req, res) => {
+    const { withdrawAmount, token, poolAddress, walletAddress } = req.body;
+
+    if (!withdrawAmount || !token || !poolAddress || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing details in the request body",
+      });
+    }
+
+    try {
+      const output = await this.sequelize.transaction(async (t) => {
+        // Get the User that made this transaction
+        const user = await this.userModel.findOne(
+          {
+            where: { walletAddress: walletAddress },
+          },
+          { transaction: t }
+        );
+
+        // Get the Token's corresponding coin_id -
+        // Currently only wBTC, USDC, wETH,ETH (NOTE: No USDC)
+        const coin = await this.coinModel.findOne(
+          {
+            where: { coinSymbol: token },
+          },
+          { transaction: t }
+        );
+
+        // Can be refactored for more products in the future
+        let productId;
+        if (token == "sepoliaWBTC") {
+          productId = 1;
+        }
+        if (token == "sepoliaUSDC") {
+          productId = 2;
+        }
+        if (token == "sepoliaWETH") {
+          productId = 3;
+        }
+
+        // Step 1: CREATE new entry transaction_products - So that we can store transaction history in our database to display
+        const newProductsEntry = await this.transactionProductModel.create(
+          {
+            userId: user.id,
+            coinId: coin.id,
+            productId: productId,
+            amount: withdrawAmount,
+            fromAddress: walletAddress,
+            toAddress: poolAddress,
+            transactionHash: "",
+          },
+          { transaction: t }
+        );
+
+        // Step 2: CREATE new entry in transaction_points table
+        const productName = await this.productModel.findOne(
+          {
+            where: { id: productId },
+          },
+          { transaction: t }
+        );
+
+        const newPointsTransaction = await this.model.create(
+          {
+            userId: user.id,
+            actionName: `Withdrew ${token} from ${productName.productName}`, // Aave can be contract address as well
+            pointsAllocated: 100,
+            transactionProductId: newProductsEntry.id,
+            transactionPaymentId: null, // Not a Payment, so null
+          },
+          { transaction: t }
+        );
+
+        // Step 3: Update Holdings row for corresponding User (?)
+        // If no such row is found, ADD a row to Holdings
+        try {
+          const correspondingHolding = await this.holdingModel.findOne(
+            {
+              where: {
+                userId: user.id,
+                coinId: coin.id,
+                productId: productId,
+              },
+            },
+            { transaction: t }
+          );
+
+          let newAmount = correspondingHolding.amount - withdrawAmount;
+
+          const updateHoldingsForUser = await correspondingHolding.update(
+            {
+              userId: user.id,
+              productId: productId,
+              coinId: coin.id,
+              amount: newAmount,
+            },
+            { transaction: t }
+          );
+        } catch (err) {
+          let negativeWithdrawnAmount = withdrawAmount * -1.0;
+          const addHoldingsForUser = await this.holdingModel.create(
+            {
+              userId: user.id,
+              coinId: coin.id,
+              productId: productId,
+              amount: negativeWithdrawnAmount,
+            },
+            { transaction: t }
+          );
+        }
+
+        // Step 4: UPDATE points held by corresponding user.
+        let updatedPoints = user.points + newPointsTransaction.pointsAllocated;
+        const updatedUserPoints = await user.update(
+          { points: updatedPoints },
+          { transaction: t }
+        );
+
+        return res.status(CREATED).json({
+          success: true,
+          message:
+            "Product Transaction Added, Holdings Updated, Points Updated",
+        });
+      });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        msg: "damn " + error.message,
+      });
     }
   };
 }

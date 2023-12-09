@@ -30,6 +30,16 @@ class TransactionRouter {
       this.transactionController.getTransactionProductHistory
     );
 
+    router.post(
+      "/products/deposit",
+      this.transactionController.depositCoinToPlatform
+    );
+
+    router.post(
+      "/products/withdraw",
+      this.transactionController.withdrawCoinToPlatform
+    );
+
     return router;
   };
 }
