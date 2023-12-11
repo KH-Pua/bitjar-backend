@@ -11,10 +11,12 @@ const apyUpdateJob = require("./scripts/apyUpdater");
 // Import routers
 const UserRouter = require("./routers/userRouter");
 const TransactionRouter = require("./routers/transactionRouter");
+const ProductRouter = require("./routers/productRouter");
 
 // Import controllers
 const UserController = require("./controllers/userController");
 const TransactionController = require("./controllers/transactionController");
+const ProductController = require("./controllers/productController");
 
 // Import db
 const db = require("./db/models");
@@ -54,9 +56,14 @@ const transactionController = new TransactionController(
   sequelize
 );
 
+const productController = new ProductController(
+  product
+)
+
 // Initialize routers
 const userRouter = new UserRouter(userController);
 const transactionRouter = new TransactionRouter(transactionController);
+const productRouter = new ProductRouter(productController);
 
 const app = express();
 
@@ -87,6 +94,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRouter.routes());
 app.use("/transactions", transactionRouter.routes());
+app.use("/products", productRouter.routes());
 
 app.listen(PORT, () => {
   console.log(

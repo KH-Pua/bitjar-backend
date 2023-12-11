@@ -39,6 +39,7 @@ const apyUpdater = async () => {
       if (returnedPoolData) {
         const infoToUpdate = {
           apr: returnedPoolData.apy,
+          tvl: returnedPoolData.tvlUsd,
         };
 
         const condition = {
@@ -69,5 +70,7 @@ const apyUpdateJob = new CronJob ('0 */30 * * * *',
         null, // onComplete
         true, // start
     );
+
+apyUpdater();
 
 module.exports = apyUpdateJob;

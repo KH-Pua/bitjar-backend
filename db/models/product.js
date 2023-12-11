@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
+      tvl: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      }
     },
     {
       sequelize,
