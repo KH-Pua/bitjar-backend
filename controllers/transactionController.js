@@ -286,9 +286,21 @@ class TransactionController extends BaseController {
   };
 
   depositCoinToPlatform = async (req, res) => {
-    const { depositAmount, token, poolAddress, walletAddress } = req.body;
+    const {
+      depositAmount,
+      token,
+      poolAddress,
+      walletAddress,
+      transactionHash,
+    } = req.body;
 
-    if (!depositAmount || !token || !poolAddress || !walletAddress) {
+    if (
+      !depositAmount ||
+      !token ||
+      !poolAddress ||
+      !walletAddress ||
+      !transactionHash
+    ) {
       return res.status(400).json({
         success: false,
         msg: "Missing details in the request body",
@@ -335,7 +347,7 @@ class TransactionController extends BaseController {
             amount: depositAmount,
             fromAddress: walletAddress,
             toAddress: poolAddress,
-            transactionHash: "",
+            transactionHash: transactionHash,
           },
           { transaction: t }
         );
@@ -418,9 +430,21 @@ class TransactionController extends BaseController {
   };
 
   withdrawCoinToPlatform = async (req, res) => {
-    const { withdrawAmount, token, poolAddress, walletAddress } = req.body;
+    const {
+      withdrawAmount,
+      token,
+      poolAddress,
+      walletAddress,
+      transactionHash,
+    } = req.body;
 
-    if (!withdrawAmount || !token || !poolAddress || !walletAddress) {
+    if (
+      !withdrawAmount ||
+      !token ||
+      !poolAddress ||
+      !walletAddress ||
+      !transactionHash
+    ) {
       return res.status(400).json({
         success: false,
         msg: "Missing details in the request body",
@@ -467,7 +491,7 @@ class TransactionController extends BaseController {
             amount: withdrawAmount,
             fromAddress: walletAddress,
             toAddress: poolAddress,
-            transactionHash: "",
+            transactionHash: transactionHash,
           },
           { transaction: t }
         );
