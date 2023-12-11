@@ -18,22 +18,19 @@ class UserRouter {
     router.get("/referrals/:address", this.userController.getReferralHistory);
     //-----------Transaction Routes-----------//
 
+    router.post("/referrals/add", this.userController.checkAndRecordReferral);
+
     router.post(
       "/getInfoViaWalletAdd",
       this.userController.getInfoViaWalletAdd
     );
 
-    router.post(
-      "/getUserDataViaReferralCode",
-      this.userController.getUserDataViaReferralCode
-    );
+    // router.post(
+    //   "/getUserDataViaReferralCode",
+    //   this.userController.getUserDataViaReferralCode
+    // );
 
     router.post("/editInfo", this.userController.editInfo);
-
-    router.post(
-      "/recordReferrerAndReferree",
-      this.userController.recordReferrerAndReferree
-    );
 
     router.post(
       "/getUserRefererIfAny",

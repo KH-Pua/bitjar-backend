@@ -6,9 +6,7 @@ require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 
 // Import APY updater
-const apyUpdateJob = require("./scripts/apyUpdater")
-
-// Import middlewares
+const apyUpdateJob = require("./scripts/apyUpdater");
 
 // Import routers
 const UserRouter = require("./routers/userRouter");
@@ -91,5 +89,7 @@ app.use("/users", userRouter.routes());
 app.use("/transactions", transactionRouter.routes());
 
 app.listen(PORT, () => {
-  console.log(`Bitjar app listening on port ${PORT}!`);
+  console.log(
+    `Bitjar app listening on port ${PORT} in ${process.env.NODE_ENV} mode`
+  );
 });
