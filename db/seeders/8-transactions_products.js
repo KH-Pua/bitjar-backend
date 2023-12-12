@@ -29,6 +29,30 @@ module.exports = {
         updated_at: new Date(),
       },
       {
+        user_id: 2, // Kee Hui
+        coin_id: 2, // USDC
+        product_id: 2,
+        amount: "42021",
+        from_address: "0xe2A2BeAb22308383094613209F44eBf2dFE74AAD", // KH wallet
+        to_address: "USDC AAVE",
+        transaction_hash:
+          "0x3a4d8aa74bcd08e66fca6217166bccfeeef0e0f98ee35cb39eb2212a35c5f6a7",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        user_id: 2, // Kee Hui
+        coin_id: 3, // WETH
+        product_id: 3,
+        amount: "32.01",
+        from_address: "0xe2A2BeAb22308383094613209F44eBf2dFE74AAD", // KH wallet
+        to_address: "WETH AAVE",
+        transaction_hash:
+          "0x3a4d8aa74bcd08e66fca6217166bccfeeef0e0f98ee35cb39eb2212a35c5f6a7",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
         user_id: 3, // Shan Quan
         coin_id: 3, // wETH
         product_id: 3,
