@@ -331,13 +331,13 @@ class TransactionController extends BaseController {
 
         // Can be refactored for more products in the future
         let productId;
-        if (token == "sepoliaWBTC") {
+        if (token.includes("BTC")) {
           productId = 1;
         }
-        if (token == "sepoliaUSDC") {
+        if (token.includes("USDC")) {
           productId = 2;
         }
-        if (token == "sepoliaWETH") {
+        if (token.includes("ETH")) {
           productId = 3;
         }
 
