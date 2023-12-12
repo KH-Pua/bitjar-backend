@@ -21,15 +21,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+
       apr: {
         type: Sequelize.FLOAT,
         allowNull: false,
+      },
+
+      tvl: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
       },
 
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,

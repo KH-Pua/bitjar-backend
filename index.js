@@ -5,15 +5,18 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
 
-// Import middlewares
+// Import APY updater
+const apyUpdateJob = require("./scripts/apyUpdater");
 
 // Import routers
 const UserRouter = require("./routers/userRouter");
 const TransactionRouter = require("./routers/transactionRouter");
+const ProductRouter = require("./routers/productRouter");
 
 // Import controllers
 const UserController = require("./controllers/userController");
 const TransactionController = require("./controllers/transactionController");
+const ProductController = require("./controllers/productController");
 
 // Import db
 const db = require("./db/models");
@@ -49,14 +52,23 @@ const transactionController = new TransactionController(
   user,
   coin,
   product,
+  holding,
   sequelize
 );
+
+const productController = new ProductController(
+  product
+)
 
 // Initialize routers
 const userRouter = new UserRouter(userController);
 const transactionRouter = new TransactionRouter(transactionController);
+const productRouter = new ProductRouter(productController);
 
 const app = express();
+
+// Call to update products table "apr" column
+apyUpdateJob.start();
 
 // Cors options setup
 const allowedOrigins = [
@@ -82,7 +94,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRouter.routes());
 app.use("/transactions", transactionRouter.routes());
+app.use("/products", productRouter.routes());
 
 app.listen(PORT, () => {
-  console.log(`Bitjar app listening on port ${PORT}!`);
+  console.log(
+    `Bitjar app listening on port ${PORT} in ${process.env.NODE_ENV} mode`
+  );
 });

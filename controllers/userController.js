@@ -1,12 +1,8 @@
 const BaseController = require("./baseController");
 const axios = require("axios");
 
-const {
-  OK,
-  CREATED,
-  BAD_REQUEST,
-  NOT_FOUND,
-} = require("../constants/statusCodes");
+const { OK, BAD_REQUEST, NOT_FOUND } = require("../constants/statusCodes");
+
 class UserController extends BaseController {
   constructor(
     userModel,
@@ -33,7 +29,6 @@ class UserController extends BaseController {
   // Get userData from Wallet address
   getUserData = async (req, res) => {
     const { address } = req.params;
-    console.log("getuserid", address);
     try {
       let user = await this.model.findOne({
         where: {
@@ -57,6 +52,7 @@ class UserController extends BaseController {
       });
     }
   };
+
   // Get leaderboard for points sorted by number of points
   getPointsLeaderboard = async (req, res) => {
     try {
@@ -141,23 +137,18 @@ class UserController extends BaseController {
     }
 
     try {
+      // Step 1: Get user's data
       const user = await this.model.findOne({
         where: { walletAddress: walletAddress },
       });
 
-      let data = await this.referralModel.findAll({
+      // Step 2: Check for any referer and get data
+      let output = await this.referralModel.findAll({
         where: { refereeId: user.id },
+        include: { model: this.model, as: "referer" },
       });
 
-      // Is there a better way to do this query?
-      if (data.length != 0 && data[0].dataValues.refererId) {
-        const output = await this.model.findOne({
-          where: { id: data[0].dataValues.refererId },
-        });
-        return res.status(OK).json({ success: true, output: output });
-      }
-
-      return res.status(OK).json({ success: true, output: data });
+      return res.status(OK).json({ success: true, output });
     } catch (err) {
       return res.status(BAD_REQUEST).json({
         success: false,
@@ -166,25 +157,7 @@ class UserController extends BaseController {
     }
   };
 
-  // ---------- Moved to transactions
-  // getUserPastTransactions = async (req, res) => {
-  //   const { userId } = req.body;
-  //   try {
-
-  //     let user = await this.model.findByPk(userId);
-  //     const output = await user.getTransactionProducts({
-  //       include: [
-  //         { model: this.coinModel, attributes: ["coinName"] },
-  //         { model: this.productModel, attributes: ["productName"] },
-  //       ],
-  //     });
-
-  //     return res.json({ success: true, data: output });
-  //   } catch (err) {
-  //     return res.status(500).json({ success: false, msg: err.message });
-  //   }
-  // };
-
+  // Get Info + create new user
   getInfoViaWalletAdd = async (req, res) => {
     function generateReferralCode() {
       // Define the character set for alphanumeric codes
@@ -220,8 +193,7 @@ class UserController extends BaseController {
         };
         // Pass new created user information to output
         const newCreatedUserInfo = await this.model.create(registrationData);
-        //newCreatedUserInfo.dataValues["newUser"] = true;
-        //output = newCreatedUserInfo
+
         output = {
           ...newCreatedUserInfo,
           newUser: true,
@@ -239,31 +211,11 @@ class UserController extends BaseController {
     }
   };
 
-  getUserDataViaReferralCode = async (req, res) => {
-    try {
-      const { referralCode } = req.body;
-      const output = await this.model.findOne({
-        where: { referralCode: referralCode },
-      });
-      return res.json({ success: true, output });
-    } catch (err) {
-      return res.status(500).json({ success: false, msg: err.message });
-    }
-  };
-
   editInfo = async (req, res) => {
+    const data = req.body;
     try {
-      // Remove the wallet address from the request body
-      const inputInfo = Object.keys(req.body).reduce((item, key) => {
-        if (key !== "walletAddress") {
-          item[key] = req.body[key];
-        }
-        return item;
-      }, {});
-
-      //Update the db with new info
-      const output = await this.model.update(inputInfo, {
-        where: { walletAddress: req.body.walletAddress },
+      const output = await this.model.update(data, {
+        where: { walletAddress: data.walletAddress },
       });
       return res.json({ success: true, output });
     } catch (err) {
@@ -271,28 +223,40 @@ class UserController extends BaseController {
     }
   };
 
-  recordReferrerAndReferree = async (req, res) => {
+  checkAndRecordReferral = async (req, res) => {
+    const refereeAddress = req.body.walletAddress;
+    const refererCode = req.body.refererCode;
+
     try {
-      let output;
-      //get referer user id via referral code
-      const { referralCode } = req.body;
-      const referrerOutput = await this.model.findOne({
-        where: { referralCode: referralCode },
+      await this.sequelize.transaction(async (t) => {
+        // Step 1: Get referer details
+        const referer = await this.model.findOne(
+          {
+            where: { referralCode: refererCode },
+          },
+          { transaction: t }
+        );
+        // Step 2: Get referee details
+        const referee = await this.model.findOne(
+          {
+            where: { walletAddress: refereeAddress },
+          },
+          { transaction: t }
+        );
+        // Step 3: Update Referral Table
+        await this.referralModel.create(
+          {
+            refererId: referer.id,
+            refereeId: referee.id,
+          },
+          { transaction: t }
+        );
+        // Step 4: Update Points to referer
+        const updatedPoints = referer.points + 10;
+        await referer.update({ points: updatedPoints }, { transaction: t });
+
+        return res.json({ success: true, msg: "Referral Recorded" });
       });
-      //get referee user id via wallet address
-      const { walletAddress } = req.body;
-      const refereeOutput = await this.model.findOne({
-        where: { walletAddress: walletAddress },
-      });
-      //Register to referrals table
-      if (referrerOutput && refereeOutput) {
-        const registrationData = {
-          refererId: referrerOutput.id,
-          refereeId: refereeOutput.id,
-        };
-        output = await this.referralModel.create(registrationData);
-      }
-      return res.json({ success: true, output });
     } catch (err) {
       return res.status(500).json({ success: false, msg: err.message });
     }
@@ -328,7 +292,6 @@ class UserController extends BaseController {
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
   getCoinLatestInfo = async (req, res) => {
     const { coinSYM } = req.body;
-    console.log(coinSYM);
 
     try {
       let information = await axios.get(
@@ -339,7 +302,6 @@ class UserController extends BaseController {
           },
         }
       );
-      // console.log(information.data); // need to add .data for some reason. some circular JSON thing
 
       return res.json({ success: true, data: information.data });
     } catch (err) {

@@ -9,6 +9,7 @@ class UserRouter {
   routes = () => {
     router.get("/", this.userController.test);
     router.get("/userData/:address", this.userController.getUserData);
+
     //-----------Ranking Routes-----------//
     router.get("/points/ranking", this.userController.getPointsLeaderboard);
     router.get(
@@ -18,22 +19,14 @@ class UserRouter {
     router.get("/referrals/:address", this.userController.getReferralHistory);
     //-----------Transaction Routes-----------//
 
+    router.post("/referrals/add", this.userController.checkAndRecordReferral);
+
     router.post(
       "/getInfoViaWalletAdd",
       this.userController.getInfoViaWalletAdd
     );
 
-    router.post(
-      "/getUserDataViaReferralCode",
-      this.userController.getUserDataViaReferralCode
-    );
-
     router.post("/editInfo", this.userController.editInfo);
-
-    router.post(
-      "/recordReferrerAndReferree",
-      this.userController.recordReferrerAndReferree
-    );
 
     router.post(
       "/getUserRefererIfAny",
