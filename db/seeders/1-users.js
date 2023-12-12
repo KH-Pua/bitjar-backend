@@ -16,7 +16,7 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        wallet_address: "0xe2A2BeAb22308383094613209F44eBf2dFE74AAD",
+        wallet_address: "0xe2a2beab22308383094613209f44ebf2dfe74aad",
         email: "keehui.pua@gmail.com",
         user_name: "KH",
         profile_picture: "", // blank on purpose
