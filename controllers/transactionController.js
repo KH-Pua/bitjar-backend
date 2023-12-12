@@ -159,6 +159,7 @@ class TransactionController extends BaseController {
         include: { model: this.coinModel },
         where: { userId: user.id },
         order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+        limit: 5,
       });
       return res.status(OK).json({ success: true, output });
     } catch (error) {
@@ -277,6 +278,8 @@ class TransactionController extends BaseController {
           { model: this.coinModel, attributes: ["coinName"] },
           { model: this.productModel, attributes: ["productName"] },
         ],
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+        limit: 5,
       });
 
       return res.json({ success: true, data: output });
@@ -328,13 +331,13 @@ class TransactionController extends BaseController {
 
         // Can be refactored for more products in the future
         let productId;
-        if (token == "sepoliaWBTC") {
+        if (token.includes("BTC")) {
           productId = 1;
         }
-        if (token == "sepoliaUSDC") {
+        if (token.includes("USDC")) {
           productId = 2;
         }
-        if (token == "sepoliaWETH") {
+        if (token.includes("ETH")) {
           productId = 3;
         }
 
@@ -484,7 +487,7 @@ class TransactionController extends BaseController {
             userId: user.id,
             coinId: coin.id,
             productId: productId,
-            amount: withdrawAmount,
+            amount: -withdrawAmount,
             fromAddress: walletAddress,
             toAddress: poolAddress,
             transactionHash: transactionHash,
@@ -539,7 +542,7 @@ class TransactionController extends BaseController {
     } catch (error) {
       return res.status(BAD_REQUEST).json({
         success: false,
-        msg: "damn " + error.message,
+        msg: error.message,
       });
     }
   };
