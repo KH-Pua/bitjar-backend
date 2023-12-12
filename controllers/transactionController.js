@@ -159,6 +159,7 @@ class TransactionController extends BaseController {
         include: { model: this.coinModel },
         where: { userId: user.id },
         order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+        limit: 5,
       });
       return res.status(OK).json({ success: true, output });
     } catch (error) {
@@ -278,6 +279,7 @@ class TransactionController extends BaseController {
           { model: this.productModel, attributes: ["productName"] },
         ],
         order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
+        limit: 5,
       });
 
       return res.json({ success: true, data: output });
@@ -540,7 +542,7 @@ class TransactionController extends BaseController {
     } catch (error) {
       return res.status(BAD_REQUEST).json({
         success: false,
-        msg: "damn " + error.message,
+        msg: error.message,
       });
     }
   };
