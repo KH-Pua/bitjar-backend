@@ -13,6 +13,20 @@ module.exports = {
       },
       {
         user_id: 1,
+        action_name: "Daily Login for 9 Dec 2023",
+        points_allocated: 5,
+        created_at: "2023-12-9T09:51:07.749Z",
+        updated_at: "2023-12-9T09:51:07.749Z",
+      },
+      {
+        user_id: 1,
+        action_name: "Daily Login for 8 Dec 2023",
+        points_allocated: 5,
+        created_at: "2023-12-8T09:51:07.749Z",
+        updated_at: "2023-12-8T09:51:07.749Z",
+      },
+      {
+        user_id: 1,
         action_name: "Daily Login for 7 Dec 2023",
         points_allocated: 5,
         created_at: "2023-12-7T09:51:07.749Z",
@@ -24,13 +38,6 @@ module.exports = {
         points_allocated: 5,
         created_at: "2023-12-6T09:51:07.749Z",
         updated_at: "2023-12-6T09:51:07.749Z",
-      },
-      {
-        user_id: 1,
-        action_name: "Referred new user: 4AAD  ", // Kee Hui
-        points_allocated: 10,
-        created_at: "2023-12-12T09:51:07.749Z",
-        updated_at: "2023-12-12T09:51:07.749Z",
       },
       {
         user_id: 1,
@@ -92,9 +99,25 @@ module.exports = {
         updated_at: "2023-12-14T09:51:07.749Z",
       },
       {
-        user_id: 2, // KH stake wBTC into Yield Vault
-        transaction_product_id: 2,
+        user_id: 2, // KH stake WBTC into Yield Vault
+        transaction_product_id: 1,
         action_name: "Deposited wBTC into AAVE",
+        points_allocated: 1000,
+        created_at: "2023-12-14T09:51:07.749Z",
+        updated_at: "2023-12-14T09:51:07.749Z",
+      },
+      {
+        user_id: 2, // KH stake USDC into Yield Vault
+        transaction_product_id: 2,
+        action_name: "Deposited USDC into AAVE",
+        points_allocated: 1000,
+        created_at: "2023-12-14T09:51:07.749Z",
+        updated_at: "2023-12-14T09:51:07.749Z",
+      },
+      {
+        user_id: 2, // KH stake WETH into Yield Vault
+        transaction_product_id: 3,
+        action_name: "Deposited WETH into AAVE",
         points_allocated: 1000,
         created_at: "2023-12-14T09:51:07.749Z",
         updated_at: "2023-12-14T09:51:07.749Z",

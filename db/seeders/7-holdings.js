@@ -22,9 +22,25 @@ module.exports = {
       },
       {
         user_id: 2, // Kee Hui
-        coin_id: 1, // wBTC
+        coin_id: 1, // WBTC
         product_id: 1, // wBTC AAVE
         amount: "1.2345",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        user_id: 2, // Kee Hui
+        coin_id: 2, // USDC
+        product_id: 2, // USDC AAVE
+        amount: "42021",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        user_id: 2, // Kee Hui
+        coin_id: 3, // WETH
+        product_id: 3, // WETH AAVE
+        amount: "32.01",
         created_at: new Date(),
         updated_at: new Date(),
       },
