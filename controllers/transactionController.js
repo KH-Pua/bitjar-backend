@@ -277,6 +277,7 @@ class TransactionController extends BaseController {
           { model: this.coinModel, attributes: ["coinName"] },
           { model: this.productModel, attributes: ["productName"] },
         ],
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
       });
 
       return res.json({ success: true, data: output });
@@ -484,7 +485,7 @@ class TransactionController extends BaseController {
             userId: user.id,
             coinId: coin.id,
             productId: productId,
-            amount: withdrawAmount,
+            amount: -withdrawAmount,
             fromAddress: walletAddress,
             toAddress: poolAddress,
             transactionHash: transactionHash,
