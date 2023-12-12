@@ -29,7 +29,6 @@ class UserController extends BaseController {
   // Get userData from Wallet address
   getUserData = async (req, res) => {
     const { address } = req.params;
-    console.log("getuserid", address);
     try {
       let user = await this.model.findOne({
         where: {
@@ -53,6 +52,7 @@ class UserController extends BaseController {
       });
     }
   };
+
   // Get leaderboard for points sorted by number of points
   getPointsLeaderboard = async (req, res) => {
     try {
@@ -211,19 +211,6 @@ class UserController extends BaseController {
     }
   };
 
-  // getUserDataViaReferralCode = async (req, res) => {
-  //   try {
-  //     const refererCode = req.body.refererCode;
-  //     console.log(refererCode);
-  //     const referer = await this.model.findOne({
-  //       where: { referralCode: refererCode },
-  //     });
-  //     return res.json({ success: true, referer });
-  //   } catch (err) {
-  //     return res.status(500).json({ success: false, msg: err.message });
-  //   }
-  // };
-
   editInfo = async (req, res) => {
     const data = req.body;
     try {
@@ -305,7 +292,6 @@ class UserController extends BaseController {
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
   getCoinLatestInfo = async (req, res) => {
     const { coinSYM } = req.body;
-    console.log(coinSYM);
 
     try {
       let information = await axios.get(
@@ -316,7 +302,6 @@ class UserController extends BaseController {
           },
         }
       );
-      // console.log(information.data); // need to add .data for some reason. some circular JSON thing
 
       return res.json({ success: true, data: information.data });
     } catch (err) {

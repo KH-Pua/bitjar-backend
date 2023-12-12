@@ -1,6 +1,6 @@
 const BaseController = require("./baseController");
 
-const { OK, BAD_REQUEST, NOT_FOUND } = require("../constants/statusCodes");
+const { OK, NOT_FOUND } = require("../constants/statusCodes");
 
 class ProductController extends BaseController {
   constructor(productModel) {

@@ -103,7 +103,7 @@ class TransactionController extends BaseController {
       });
     }
     try {
-      const output = await this.sequelize.transaction(async (t) => {
+      await this.sequelize.transaction(async (t) => {
         // Step 1: Get userId from walletAddress in userModel
         const user = await this.userModel.findOne(
           {
@@ -308,7 +308,7 @@ class TransactionController extends BaseController {
     }
 
     try {
-      const output = await this.sequelize.transaction(async (t) => {
+      await this.sequelize.transaction(async (t) => {
         // Get the User that made this transaction
         const user = await this.userModel.findOne(
           {
@@ -366,7 +366,6 @@ class TransactionController extends BaseController {
             actionName: `Deposited ${token} into ${productName.productName}`, // Aave can be contract address as well
             pointsAllocated: 100,
             transactionProductId: newProductsEntry.id,
-            transactionPaymentId: null, // Not a Payment, so null
           },
           { transaction: t }
         );
@@ -410,10 +409,7 @@ class TransactionController extends BaseController {
 
         // Step 4: UPDATE points held by corresponding user.
         let updatedPoints = user.points + newPointsTransaction.pointsAllocated;
-        const updatedUserPoints = await user.update(
-          { points: updatedPoints },
-          { transaction: t }
-        );
+        await user.update({ points: updatedPoints }, { transaction: t });
 
         return res.status(CREATED).json({
           success: true,
@@ -424,7 +420,7 @@ class TransactionController extends BaseController {
     } catch (error) {
       return res.status(BAD_REQUEST).json({
         success: false,
-        msg: "damn " + error.message,
+        msg: error.message,
       });
     }
   };
@@ -452,7 +448,7 @@ class TransactionController extends BaseController {
     }
 
     try {
-      const output = await this.sequelize.transaction(async (t) => {
+      await this.sequelize.transaction(async (t) => {
         // Get the User that made this transaction
         const user = await this.userModel.findOne(
           {
@@ -496,26 +492,7 @@ class TransactionController extends BaseController {
           { transaction: t }
         );
 
-        // Step 2: CREATE new entry in transaction_points table
-        const productName = await this.productModel.findOne(
-          {
-            where: { id: productId },
-          },
-          { transaction: t }
-        );
-
-        const newPointsTransaction = await this.model.create(
-          {
-            userId: user.id,
-            actionName: `Withdrew ${token} from ${productName.productName}`, // Aave can be contract address as well
-            pointsAllocated: 100,
-            transactionProductId: newProductsEntry.id,
-            transactionPaymentId: null, // Not a Payment, so null
-          },
-          { transaction: t }
-        );
-
-        // Step 3: Update Holdings row for corresponding User (?)
+        // Step 2: Update Holdings row for corresponding User (?)
         // If no such row is found, ADD a row to Holdings
         try {
           const correspondingHolding = await this.holdingModel.findOne(
@@ -552,13 +529,6 @@ class TransactionController extends BaseController {
             { transaction: t }
           );
         }
-
-        // Step 4: UPDATE points held by corresponding user.
-        let updatedPoints = user.points + newPointsTransaction.pointsAllocated;
-        const updatedUserPoints = await user.update(
-          { points: updatedPoints },
-          { transaction: t }
-        );
 
         return res.status(CREATED).json({
           success: true,
