@@ -7,7 +7,7 @@ module.exports = {
       {
         user_id: 1, // Gab
         coin_id: 1, // wBTC
-        payment_status: "Completed",
+        payment_status: "completed",
         fiat_amount_usd: "100.42",
         coin_amount_purchased: "0.00265",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
@@ -20,7 +20,7 @@ module.exports = {
       {
         user_id: 1, // Gab
         coin_id: 1, // wBTC
-        payment_status: "Failed",
+        payment_status: "failed",
         fiat_amount_usd: "300",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
         to_address: "0x4ac5E0c3a1114D47459A818C85348068745d7CD5", // Gab wallet
@@ -30,7 +30,7 @@ module.exports = {
       {
         user_id: 2, // Kee Hui
         coin_id: 1, // wBTC
-        payment_status: "Completed",
+        payment_status: "completed",
         fiat_amount_usd: "1000",
         coin_amount_purchased: "0.02654",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
@@ -43,7 +43,7 @@ module.exports = {
       {
         user_id: 2, // Kee Hui
         coin_id: 1, // wBTC
-        payment_status: "Payment Rejected",
+        payment_status: "payment rejected",
         fiat_amount_usd: "1000",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
         to_address: "0xe2A2BeAb22308383094613209F44eBf2dFE74AAD", // KH wallet
@@ -53,7 +53,7 @@ module.exports = {
       {
         user_id: 3, // Shan Quan
         coin_id: 3, // wETH
-        payment_status: "Completed",
+        payment_status: "completed",
         fiat_amount_usd: "500",
         coin_amount_purchased: "0.23",
         from_address: "0x3472Ccc4a932cc5c07740781286083048eb4A5f1", // Spencer wallet
@@ -66,7 +66,7 @@ module.exports = {
       {
         user_id: 4, // Spencer
         coin_id: 3, // wETH
-        payment_status: "Completed",
+        payment_status: "completed",
         fiat_amount_usd: "88888",
         coin_amount_purchased: "39.81",
         from_address: "0x4ac5E0c3a1114D47459A818C85348068745d7CD5", // Spencer wallet

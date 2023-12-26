@@ -114,6 +114,7 @@ class UserController extends BaseController {
           as: "referee",
           attributes: ["id", "walletAddress", "userName", "createdAt"],
         },
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
       });
 
       return res.status(OK).json({ success: true, output });

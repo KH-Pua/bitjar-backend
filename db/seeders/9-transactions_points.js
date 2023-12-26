@@ -70,6 +70,7 @@ module.exports = {
         updated_at: "2023-12-12T09:51:07.749Z",
       },
       {
+        //10
         user_id: 2, // KH earned daily login points
         action_name: "Daily Login for 13 Dec 2023",
         points_allocated: 5,
@@ -144,6 +145,7 @@ module.exports = {
         updated_at: "2023-12-14T09:51:07.749Z",
       },
       {
+        //20
         user_id: 3,
         transaction_payment_id: 5, // SQ purchased $500 wETH
         action_name: "Purchased wETH via MoonPay",
