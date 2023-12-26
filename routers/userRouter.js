@@ -26,7 +26,7 @@ class UserRouter {
       this.userController.getInfoViaWalletAdd
     );
 
-    router.post("/editInfo", this.userController.editInfo);
+    router.post("/editInfo", this.userController.editInfo); // Why is this post not put?
 
     router.post(
       "/getUserRefererIfAny",
@@ -39,6 +39,15 @@ class UserRouter {
 
     // CoinMarketCap APIs - Documentation requires APIs to be called from Backend
     router.post("/getCoinLatestinfo", this.userController.getCoinLatestInfo);
+
+    //-----------Notification Routes-----------//
+
+    router.get("/notifications/:address", this.userController.getNotifications);
+
+    router.put(
+      "/notifications/read",
+      this.userController.markNotificationAsRead
+    );
 
     return router;
   };

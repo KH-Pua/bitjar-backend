@@ -288,6 +288,57 @@ class UserController extends BaseController {
     }
   };
 
+  getNotifications = async (req, res) => {
+    const { address } = req.params;
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await user.getNotifications({
+        // include: [
+        //   {
+        //     model: this.productModel,
+        //   },
+        //   { model: this.coinModel },
+        // ],
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        error,
+        msg: "Unable to retrieve notifications data",
+      });
+    }
+  };
+
+  // WIP METHOD
+  markNotificationAsRead = async (req, res) => {
+    const { address } = req.params;
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await user.getNotifications({
+        // include: [
+        //   {
+        //     model: this.productModel,
+        //   },
+        //   { model: this.coinModel },
+        // ],
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        error,
+        msg: "Unable to retrieve notifications data",
+      });
+    }
+  };
+
   // ---------- CMC Methods ---------- //
 
   // https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
