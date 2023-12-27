@@ -114,6 +114,7 @@ class UserController extends BaseController {
           as: "referee",
           attributes: ["id", "walletAddress", "userName", "createdAt"],
         },
+        order: [["createdAt", "DESC"]], // Change 'createdAt' to the appropriate column name
       });
 
       return res.status(OK).json({ success: true, output });
@@ -283,6 +284,57 @@ class UserController extends BaseController {
         success: false,
         error,
         msg: "Unable to retrieve referral holdings data",
+      });
+    }
+  };
+
+  getNotifications = async (req, res) => {
+    const { address } = req.params;
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await user.getNotifications({
+        // include: [
+        //   {
+        //     model: this.productModel,
+        //   },
+        //   { model: this.coinModel },
+        // ],
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        error,
+        msg: "Unable to retrieve notifications data",
+      });
+    }
+  };
+
+  // WIP METHOD
+  markNotificationAsRead = async (req, res) => {
+    const { address } = req.params;
+    try {
+      const user = await this.model.findOne({
+        where: { walletAddress: address },
+      });
+      let output = await user.getNotifications({
+        // include: [
+        //   {
+        //     model: this.productModel,
+        //   },
+        //   { model: this.coinModel },
+        // ],
+      });
+
+      return res.status(OK).json({ success: true, output });
+    } catch (error) {
+      return res.status(BAD_REQUEST).json({
+        success: false,
+        error,
+        msg: "Unable to retrieve notifications data",
       });
     }
   };

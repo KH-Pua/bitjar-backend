@@ -1,23 +1,23 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class TransactionPoint extends Model {
+  class Notification extends Model {
     static associate(models) {
       //create associations in here
-      TransactionPoint.belongsTo(models.user, { foreignKey: "userId" });
-      TransactionPoint.belongsTo(models.transactionProduct, {
+      Notification.belongsTo(models.user, { foreignKey: "userId" });
+      Notification.belongsTo(models.transactionPoint, {
+        foreignKey: "transactionPointId",
+      });
+      Notification.belongsTo(models.transactionProduct, {
         foreignKey: "transactionProductId",
       });
-      TransactionPoint.belongsTo(models.transactionPayment, {
+      Notification.belongsTo(models.transactionPayment, {
         foreignKey: "transactionPaymentId",
-      });
-      TransactionPoint.hasMany(models.notification, {
-        foreignKey: "transactionPointId",
       });
     }
   }
 
-  TransactionPoint.init(
+  Notification.init(
     {
       userId: {
         type: DataTypes.INTEGER,
@@ -27,13 +27,21 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      actionName: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      pointsAllocated: {
-        type: DataTypes.FLOAT,
+      isRead: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
+      },
+      transactionPointId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "transactionPoint",
+          key: "id",
+        },
       },
       transactionProductId: {
         type: DataTypes.INTEGER,
@@ -54,10 +62,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "transactionPoint",
+      modelName: "notification",
       timestamps: true,
       underscored: true,
     }
   );
-  return TransactionPoint;
+  return Notification;
 };

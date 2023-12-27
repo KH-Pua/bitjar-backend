@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       TransactionPayment.belongsTo(models.user, { foreignKey: "userId" });
       TransactionPayment.belongsTo(models.coin, { foreignKey: "coinId" });
       TransactionPayment.hasMany(models.transactionPoint, {
-        foreignKey: "transactionProductId",
+        foreignKey: "transactionPaymentId",
+      });
+      TransactionPayment.hasMany(models.notification, {
+        foreignKey: "transactionPaymentId",
       });
     }
   }
